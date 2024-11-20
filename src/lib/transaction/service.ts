@@ -38,7 +38,7 @@ export async function getTransactions(
   if (!session) throw new Error("Unauthorized");
 
   const userId = session.user.id;
-  const take = perPage || 10;
+  const take = perPage || 50;
   const skip = (page - 1) * take;
 
   try {

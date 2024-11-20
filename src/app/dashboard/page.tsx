@@ -148,7 +148,7 @@ export default async function DashboardPage() {
             <CardFooter>
               <Button variant="outline" className="w-full">
                 <Link
-                  href="/transactions"
+                  href="/dashboard/transactions"
                   className="flex items-center justify-center"
                 >
                   View All Transactions

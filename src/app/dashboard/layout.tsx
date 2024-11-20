@@ -4,14 +4,10 @@ import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
   SidebarInset,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import Link from "next/link";
-import { Home, PieChart, List, Settings } from "lucide-react";
+import NavLinks from "./components/NavLinks";
 
 export const metadata: Metadata = {
   title: "Expense Tracker",
@@ -31,40 +27,7 @@ export default function RootLayout({
             <h2 className="text-xl font-bold p-4">Expense Tracker</h2>
           </SidebarHeader>
           <SidebarContent>
-            <SidebarMenu className="px-4 py-2">
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/">
-                    <Home className="mr-2 h-4 w-4" />
-                    <span>Dashboard</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/transactions">
-                    <List className="mr-2 h-4 w-4" />
-                    <span>Transactions</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/reports">
-                    <PieChart className="mr-2 h-4 w-4" />
-                    <span>Reports</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/settings">
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
+            <NavLinks />
           </SidebarContent>
         </Sidebar>
         <SidebarInset className="flex flex-col flex-grow overflow-auto">

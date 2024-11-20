@@ -1,4 +1,11 @@
 import { z } from "zod";
+// Category Schema
+export const ZCategory = z.object({
+  id: z.string().cuid(),
+  name: z.string(),
+  type: z.enum(["INCOME", "EXPENSE"]),
+  userId: z.string().cuid(),
+});
 
 export const ZTransaction = z.object({
   id: z.string().cuid(),
@@ -8,14 +15,7 @@ export const ZTransaction = z.object({
   date: z.date().default(() => new Date()),
   userId: z.string().cuid(),
   categoryId: z.string().cuid(),
+  category: ZCategory,
 });
 
 export type TTransaction = z.infer<typeof ZTransaction>;
-
-// Category Schema
-export const ZCategory = z.object({
-  id: z.string().cuid(),
-  name: z.string(),
-  type: z.enum(["INCOME", "EXPENSE"]),
-  userId: z.string().cuid(),
-});
