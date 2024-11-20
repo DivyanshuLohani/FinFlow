@@ -35,3 +35,8 @@ export type TAllowedFileExtension = z.infer<typeof ZAllowedFileExtension>;
 export const ZId = z.string().cuid();
 
 export const ZUuid = z.string().uuid();
+
+export type TTimeFrame = {
+  startDate: Date;
+  endDate: Date;
+};

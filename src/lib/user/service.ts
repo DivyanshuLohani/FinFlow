@@ -1,5 +1,5 @@
 import "server-only";
-import { Prisma } from "@prisma/client";
+import { CategoryType, Prisma } from "@prisma/client";
 import {
   TUser,
   TUserCreateInput,
@@ -12,6 +12,7 @@ import { prisma } from "../database/prisma";
 import { ZId } from "@/types/common";
 import { z } from "zod";
 import { DatabaseError, ResourceNotFoundError } from "@/types/errors";
+import { defaultCategories } from "../constants";
 
 const responseSelection = {
   id: true,
@@ -153,6 +154,29 @@ export const createUser = async (data: TUserCreateInput): Promise<TUser> => {
     const user = await prisma.user.create({
       data,
       select: responseSelection,
+    });
+
+    await prisma.category.createMany({
+      data: defaultCategories.map((category) => ({
+        ...category,
+        type: category.type as CategoryType,
+        userId: user.id,
+        budget: {
+          create: {
+            amount: category.budget.amount,
+            startDate: new Date(
+              new Date().getFullYear(),
+              new Date().getMonth(),
+              1
+            ),
+            endDate: new Date(
+              new Date().getFullYear(),
+              new Date().getMonth() + 1,
+              0
+            ),
+          },
+        },
+      })),
     });
 
     return user as TUser;
