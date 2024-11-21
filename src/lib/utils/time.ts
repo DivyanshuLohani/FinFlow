@@ -1,7 +1,7 @@
 import { TTimeFrame } from "@/types/common";
 
 export function getTimeFrame(
-  a: "day" | "week" | "month" | "quater" | "semister" | "year"
+  a: "day" | "week" | "month" | "quater" | "semester" | "year"
 ): TTimeFrame {
   switch (a) {
     case "day":
@@ -49,7 +49,7 @@ export function getTimeFrame(
           999
         ),
       };
-    case "semister":
+    case "semester":
       const semester = Math.floor(new Date().getMonth() / 6);
       const firstMonthSemester = semester * 6;
       const lastMonthSemester = firstMonthSemester + 5;

@@ -1,7 +1,7 @@
 "use client";
 import { getTimeFrame } from "@/lib/utils/time";
 import { TTransaction } from "@/types/transaction";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getTransactions } from "../actions";
 import {
   Table,
@@ -9,27 +9,21 @@ import {
   TableRow,
   TableHead,
   TableBody,
-  TableCell,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import { Search, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
-import { format } from "path";
+import { ArrowUpDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import TransactionRow from "./TransactionRow";
+import { TransactionsSkeleton } from "./loading";
+import TransactionFilter from "./TransactionFilter";
+import TransactionTimeframe from "./TransactionTimeframe";
 
 export default function TransactionList() {
   const [transactions, setTransactions] = useState<TTransaction[]>([]);
   const [isFetching, setIsFetching] = useState(true);
-  const [hasMore, setHasMore] = useState<boolean>(true);
-  const [timeFrame, setTimeFrame] = useState(getTimeFrame("month"));
-  const [page, setPage] = useState(1);
+  // const [hasMore, setHasMore] = useState<boolean>(true);
+  const [timeFrame, setTimeFrame] = useState("month");
+  // const [page, setPage] = useState(1);
 
   const [sortConfig, setSortConfig] = useState({
     key: "date",
@@ -78,9 +72,9 @@ export default function TransactionList() {
   useEffect(() => {
     const fetchTransactions = async () => {
       setIsFetching(true);
-      const res = await getTransactions(1, timeFrame);
+      const res = await getTransactions(1, getTimeFrame(timeFrame as any));
       setTransactions(res.transactions as TTransaction[]);
-      setHasMore(res.total === transactions.length ? false : true);
+      // setHasMore(res.total === transactions.length ? false : true);
       setIsFetching(false);
     };
     fetchTransactions();
@@ -96,98 +90,83 @@ export default function TransactionList() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full"
-            // icon={<Search className="h-4 w-4 text-gray-500" />}
           />
         </div>
-        <Select value={filterType} onValueChange={setFilterType}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Filter by type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Transactions</SelectItem>
-            <SelectItem value="INCOME">Income</SelectItem>
-            <SelectItem value="EXPENSE">Expenses</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center space-x-4">
+          <TransactionFilter
+            filterType={filterType}
+            setFilterType={setFilterType}
+          />
+          <TransactionTimeframe
+            timeFrame={timeFrame}
+            setTimeFrame={setTimeFrame}
+          />
+        </div>
       </div>
-      <div className="overflow-x-auto rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">
-                <Button
-                  variant="ghost"
-                  className="p-0 hover:bg-transparent"
-                  onClick={() => handleSort("type")}
-                >
-                  <span className="sr-only">Sort by Type</span>
-                  Type
-                  <ArrowUpDown className="ml-1 h-4 w-4" />
-                </Button>
-              </TableHead>
-              <TableHead>
-                <Button
-                  variant="ghost"
-                  className="p-0 hover:bg-transparent"
-                  onClick={() => handleSort("category")}
-                >
-                  <span className="sr-only">Sort by Category</span>
-                  Category
-                  <ArrowUpDown className="ml-1 h-4 w-4" />
-                </Button>
-              </TableHead>
-              <TableHead className="text-right">
-                <Button
-                  variant="ghost"
-                  className="p-0 hover:bg-transparent"
-                  onClick={() => handleSort("amount")}
-                >
-                  <span className="sr-only">Sort by Amount</span>
-                  Amount
-                  <ArrowUpDown className="ml-1 h-4 w-4" />
-                </Button>
-              </TableHead>
-              <TableHead className="text-right">
-                <Button
-                  variant="ghost"
-                  className="p-0 hover:bg-transparent"
-                  onClick={() => handleSort("date")}
-                >
-                  <span className="sr-only">Sort by Date</span>
-                  Date
-                  <ArrowUpDown className="ml-1 h-4 w-4" />
-                </Button>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredTransactions.map((transaction) => (
-              <TableRow key={transaction.id}>
-                <TableCell className="font-medium">
-                  {transaction.type === "INCOME" ? (
-                    <span className="flex items-center text-green-600">
-                      <ArrowUp className="mr-1 h-4 w-4" />
-                      <span className="hidden sm:inline">Income</span>
-                    </span>
-                  ) : (
-                    <span className="flex items-center text-red-600">
-                      <ArrowDown className="mr-1 h-4 w-4" />
-                      <span className="hidden sm:inline">Expense</span>
-                    </span>
-                  )}
-                </TableCell>
-                <TableCell>{transaction.category.name}</TableCell>
-                <TableCell className="text-right">
-                  {formatCurrency(transaction.amount)}
-                </TableCell>
-                <TableCell className="text-right whitespace-nowrap">
-                  {formatDate(transaction.date)}
-                </TableCell>
+      {isFetching ? (
+        <TransactionsSkeleton />
+      ) : (
+        <div className="overflow-x-auto rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">
+                  <Button
+                    variant="ghost"
+                    className="p-0 hover:bg-transparent"
+                    onClick={() => handleSort("type")}
+                  >
+                    <span className="sr-only">Sort by Type</span>
+                    Type
+                    <ArrowUpDown className="ml-1 h-4 w-4" />
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button
+                    variant="ghost"
+                    className="p-0 hover:bg-transparent"
+                    onClick={() => handleSort("category")}
+                  >
+                    <span className="sr-only">Sort by Category</span>
+                    Category
+                    <ArrowUpDown className="ml-1 h-4 w-4" />
+                  </Button>
+                </TableHead>
+                <TableHead className="text-right">
+                  <Button
+                    variant="ghost"
+                    className="p-0 hover:bg-transparent"
+                    onClick={() => handleSort("amount")}
+                  >
+                    <span className="sr-only">Sort by Amount</span>
+                    Amount
+                    <ArrowUpDown className="ml-1 h-4 w-4" />
+                  </Button>
+                </TableHead>
+                <TableHead className="text-right">
+                  <Button
+                    variant="ghost"
+                    className="p-0 hover:bg-transparent"
+                    onClick={() => handleSort("date")}
+                  >
+                    <span className="sr-only">Sort by Date</span>
+                    Date
+                    <ArrowUpDown className="ml-1 h-4 w-4" />
+                  </Button>
+                </TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            </TableHeader>
+            <TableBody>
+              {filteredTransactions.map((transaction) => (
+                <TransactionRow
+                  transaction={transaction}
+                  key={transaction.id}
+                />
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </div>
   );
 }

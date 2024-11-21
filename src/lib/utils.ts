@@ -13,9 +13,12 @@ export function titleCase(str: string) {
     .join(" ");
 }
 
-export function formatDate(date: Date) {
+export function formatDate(
+  date: Date,
+  style: Intl.DateTimeFormatOptions["dateStyle"] = "long"
+) {
   return new Intl.DateTimeFormat("en-GB", {
-    dateStyle: "long",
+    dateStyle: style,
   }).format(date);
 }
 
