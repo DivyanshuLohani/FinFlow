@@ -159,8 +159,8 @@ export default function TransactionList() {
             <TableBody>
               {filteredTransactions.map((transaction) => (
                 <TransactionRow
-                  transaction={transaction}
                   key={transaction.id}
+                  transaction={transaction}
                 />
               ))}
             </TableBody>

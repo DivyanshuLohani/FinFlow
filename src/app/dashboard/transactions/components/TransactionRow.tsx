@@ -5,6 +5,7 @@ import { TTransaction } from "@/types/transaction";
 
 import { ArrowUp, ArrowDown } from "lucide-react";
 import React from "react";
+import { TransactionDialog } from "./TransactionDialog";
 
 interface TransactionRowProps {
   transaction: TTransaction;
@@ -35,6 +36,9 @@ export default function TransactionRow({ transaction }: TransactionRowProps) {
         {isMobile
           ? formatDate(transaction.date, "short")
           : formatDate(transaction.date)}
+      </TableCell>
+      <TableCell className="text-right whitespace-nowrap">
+        <TransactionDialog transaction={transaction} />
       </TableCell>
     </TableRow>
   );
