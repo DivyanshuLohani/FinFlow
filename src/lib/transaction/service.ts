@@ -2,6 +2,7 @@ import "server-only";
 import { prisma } from "../database/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/authOptions";
+import { TTransaction } from "@/types/transaction";
 
 export async function createTransaction(data: any) {
   try {
@@ -33,7 +34,7 @@ export async function getTransactions(
   startDate?: Date,
   endDate?: Date,
   perPage?: number
-) {
+): Promise<[TTransaction[], number]> {
   const session = await getServerSession(authOptions);
   if (!session) throw new Error("Unauthorized");
 
