@@ -169,7 +169,7 @@ export default async function DashboardPage() {
             <AddTransactionDialog categories={categories} type="EXPENSE" />
             <Button variant="outline" className="w-full">
               <Link
-                href="/reports"
+                href="/dashboard/reports"
                 className="flex items-center justify-center"
               >
                 <PlusIcon className="mr-2 h-4 w-4" />
