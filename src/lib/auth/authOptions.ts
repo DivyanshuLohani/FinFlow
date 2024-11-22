@@ -57,7 +57,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           emailVerified: user.emailVerified,
-          imageUrl: user.imageUrl,
+          imageUrl: user.image,
         };
       },
     }),
@@ -99,7 +99,10 @@ export const authOptions: NextAuthOptions = {
           throw new AuthenticationError("Email already verified");
         }
 
-        user = await updateUser(user.id, { emailVerified: new Date() });
+        user = await updateUser(user.id, {
+          emailVerified: new Date(),
+          image: null,
+        });
 
         return user;
       },
@@ -154,55 +157,55 @@ export const authOptions: NextAuthOptions = {
         return false;
       }
 
-      if (account.provider) {
-        // const provider = account.provider
-        //   .toLowerCase()
-        //   .replace("-", "") as AuthProvider;
-        // check if accounts for this provider / account Id already exists
-        const existingUserWithAccount = await prisma.user.findFirst({
-          include: {
-            accounts: {
-              where: {
-                authProvider: account.provider,
-              },
-            },
-          },
-        });
+      // if (account.provider) {
+      //   // const provider = account.provider
+      //   //   .toLowerCase()
+      //   //   .replace("-", "") as AuthProvider;
+      //   // check if accounts for this provider / account Id already exists
+      //   const existingUserWithAccount = await prisma.user.findFirst({
+      //     include: {
+      //       accounts: {
+      //         where: {
+      //           authProvider: account.provider,
+      //         },
+      //       },
+      //     },
+      //   });
 
-        if (existingUserWithAccount) {
-          // User with this provider found
-          // check if email still the same
-          if (existingUserWithAccount.email === user.email) {
-            return true;
-          }
+      //   if (existingUserWithAccount) {
+      //     // User with this provider found
+      //     // check if email still the same
+      //     if (existingUserWithAccount.email === user.email) {
+      //       return true;
+      //     }
 
-          // user seemed to change his email within the provider
-          // check if user with this email already exist
-          // if not found just update user with new email address
-          // if found throw an error (TODO find better solution)
-          const otherUserWithEmail = await getUserByEmail(user.email);
+      //     // user seemed to change his email within the provider
+      //     // check if user with this email already exist
+      //     // if not found just update user with new email address
+      //     // if found throw an error (TODO find better solution)
+      //     const otherUserWithEmail = await getUserByEmail(user.email);
 
-          if (!otherUserWithEmail) {
-            await updateUser(existingUserWithAccount.id, { email: user.email });
-            return true;
-          }
-          throw new Error(
-            "Looks like you updated your email somewhere else. A user with this new email exists already."
-          );
-        }
+      //     if (!otherUserWithEmail) {
+      //       await updateUser(existingUserWithAccount.id, { email: user.email });
+      //       return true;
+      //     }
+      //     throw new Error(
+      //       "Looks like you updated your email somewhere else. A user with this new email exists already."
+      //     );
+      //   }
 
-        // There is no existing account for this identity provider / account id
-        // check if user account with this email already exists
-        // if user already exists throw error and request password login
-        const existingUserWithEmail = await getUserByEmail(user.email);
+      //   // There is no existing account for this identity provider / account id
+      //   // check if user account with this email already exists
+      //   // if user already exists throw error and request password login
+      //   const existingUserWithEmail = await getUserByEmail(user.email);
 
-        if (existingUserWithEmail) {
-          // Sign in the user with the existing account
-          return true;
-        }
+      //   if (existingUserWithEmail) {
+      //     // Sign in the user with the existing account
+      //     return true;
+      //   }
 
-        return true;
-      }
+      //   return true;
+      // }
 
       return true;
     },
