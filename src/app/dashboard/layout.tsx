@@ -6,8 +6,11 @@ import {
   SidebarHeader,
   SidebarInset,
   SidebarTrigger,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
 import NavLinks from "./components/NavLinks";
+import ThemeSwitch from "@/components/ThemeSwitcher";
+import ClientLogout from "@/components/ClientLogout";
 
 export const metadata: Metadata = {
   title: "Expense Tracker",
@@ -29,6 +32,10 @@ export default function RootLayout({
           <SidebarContent>
             <NavLinks />
           </SidebarContent>
+          <SidebarFooter className="p-4 space-y-4">
+            <ThemeSwitch />
+            <ClientLogout />
+          </SidebarFooter>
         </Sidebar>
         <SidebarInset className="flex flex-col flex-grow overflow-auto">
           <header className="sticky top-0 z-10 bg-background border-b p-4 flex justify-between items-center">

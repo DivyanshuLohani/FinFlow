@@ -54,7 +54,10 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Balance</CardTitle>
-            <Banknote className="h-4 w-4 text-muted-foreground" />
+            <Banknote
+              className="h-4 w-4 text-muted-foreground"
+              stroke={totalBalance > 0 ? "green" : "red"}
+            />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -65,7 +68,10 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Income</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <TrendingUp
+              className="h-4 w-4 text-muted-foreground"
+              stroke="green"
+            />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -88,7 +94,10 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Expenses</CardTitle>
-            <TrendingDown className="h-4 w-4 text-muted-foreground" />
+            <TrendingDown
+              className="h-4 w-4 text-muted-foreground"
+              stroke="red"
+            />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
