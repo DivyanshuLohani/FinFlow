@@ -9,9 +9,13 @@ import { TransactionDialog } from "./TransactionDialog";
 
 interface TransactionRowProps {
   transaction: TTransaction;
+  setTransactions: React.Dispatch<React.SetStateAction<TTransaction[]>>;
 }
 
-export default function TransactionRow({ transaction }: TransactionRowProps) {
+export default function TransactionRow({
+  transaction,
+  setTransactions,
+}: TransactionRowProps) {
   const isMobile = useIsMobile();
   return (
     <TableRow key={transaction.id}>
@@ -38,7 +42,10 @@ export default function TransactionRow({ transaction }: TransactionRowProps) {
           : formatDate(transaction.date)}
       </TableCell>
       <TableCell className="text-right whitespace-nowrap">
-        <TransactionDialog transaction={transaction} />
+        <TransactionDialog
+          transaction={transaction}
+          setTransactions={setTransactions}
+        />
       </TableCell>
     </TableRow>
   );

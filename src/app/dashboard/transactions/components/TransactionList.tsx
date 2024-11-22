@@ -154,6 +154,12 @@ export default function TransactionList() {
                     <ArrowUpDown className="ml-1 h-4 w-4" />
                   </Button>
                 </TableHead>
+                <TableHead className="text-right">
+                  <Button variant="ghost" className="p-0 hover:bg-transparent">
+                    <span className="sr-only">Sort by Date</span>
+                    Actions
+                  </Button>
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -161,6 +167,7 @@ export default function TransactionList() {
                 <TransactionRow
                   key={transaction.id}
                   transaction={transaction}
+                  setTransactions={setTransactions}
                 />
               ))}
             </TableBody>

@@ -17,6 +17,22 @@ export async function createTransaction(data: any) {
   }
 }
 
+export async function deleteTransaction(id: string) {
+  const session = await getServerSession(authOptions);
+  if (!session) throw new Error("Unauthorized");
+  try {
+    const deletedTransaction = await prisma.transaction.delete({
+      where: {
+        id,
+        userId: session.user.id,
+      },
+    });
+    return deletedTransaction;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function getCategories() {
   const session = await getServerSession(authOptions);
   if (!session) throw new Error("Unauthorized");

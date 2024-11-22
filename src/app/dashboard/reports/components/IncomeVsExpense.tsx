@@ -7,19 +7,27 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  ResponsiveContainer,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  Bar,
-  BarChart,
-} from "recharts";
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import { CartesianGrid, XAxis, YAxis, Bar, BarChart } from "recharts";
 
 interface IncomeVsExpenseProps {
   monthlyData: { name: string; income: number; expenses: number }[];
 }
+
+const chartConfig = {
+  income: {
+    label: "Income",
+    color: "hsl(var(--chart-1))",
+  },
+  expenses: {
+    label: "Expense",
+    color: "hsl(var(--chart-2))",
+  },
+} satisfies ChartConfig;
 
 export default function IncomeVsExpense({ monthlyData }: IncomeVsExpenseProps) {
   return (
@@ -30,18 +38,37 @@ export default function IncomeVsExpense({ monthlyData }: IncomeVsExpenseProps) {
           Monthly comparison of income and expenses
         </CardDescription>
       </CardHeader>
-      <CardContent className="h-[300px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={monthlyData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="income" fill="#8884d8" />
-            <Bar dataKey="expenses" fill="#82ca9d" />
+      <CardContent>
+        <ChartContainer config={chartConfig} className="h-[200px] w-full">
+          <BarChart accessibilityLayer data={monthlyData}>
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="name"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value) => value.slice(0, 3)}
+            />
+            <YAxis
+              dataKey="income"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+            />
+            <YAxis
+              dataKey="expenses"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+            />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent indicator="dashed" />}
+            />
+            <Bar dataKey="income" fill="green" radius={4} />
+            <Bar dataKey="expenses" fill="red" radius={4} />
           </BarChart>
-        </ResponsiveContainer>
+        </ChartContainer>
       </CardContent>
     </Card>
   );
