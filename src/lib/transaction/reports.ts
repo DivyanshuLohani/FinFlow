@@ -15,7 +15,7 @@ export async function getMonthlyExpenseVsIncome(months: number = 5) {
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const monthTransactions = await getTransactions(1, firstDay, lastDay);
-    if (monthTransactions[0].length === 0) continue;
+
     transactions.push({
       name: firstDay.toLocaleString("default", {
         month: "long",
