@@ -13,7 +13,7 @@ import ThemeSwitch from "@/components/ThemeSwitcher";
 import ClientLogout from "@/components/ClientLogout";
 
 export const metadata: Metadata = {
-  title: "Expense Tracker",
+  title: "Fin Flow",
   description: "Track your expenses and income",
 };
 
@@ -27,7 +27,7 @@ export default function RootLayout({
       <div className="flex h-screen w-full">
         <Sidebar>
           <SidebarHeader>
-            <h2 className="text-xl font-bold p-4">Expense Tracker</h2>
+            <h2 className="text-xl font-bold p-4">Fin Flow</h2>
           </SidebarHeader>
           <SidebarContent>
             <NavLinks />
@@ -39,7 +39,7 @@ export default function RootLayout({
         </Sidebar>
         <SidebarInset className="flex flex-col flex-grow overflow-auto">
           <header className="sticky top-0 z-10 bg-background border-b p-4 flex justify-between items-center">
-            <h1 className="text-2xl font-bold">Expense Tracker</h1>
+            <h1 className="text-2xl font-bold">Fin Flow</h1>
             <div className="md-hidden">
               <SidebarTrigger />
             </div>
