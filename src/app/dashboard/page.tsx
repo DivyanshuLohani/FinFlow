@@ -19,6 +19,7 @@ import {
 import AddTransactionDialog from "./components/AddIncomeDialog";
 import { getCategories } from "@/lib/transaction/service";
 import { formatCurrency } from "@/lib/utils";
+import { TTransaction } from "@/types/transaction";
 
 export default async function DashboardPage() {
   const recentTransactions = await getRecentTransactions(5);
@@ -31,7 +32,7 @@ export default async function DashboardPage() {
     startDate: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
     endDate: new Date(new Date().getFullYear(), new Date().getMonth(), 0),
   };
-  const totalBalance = await getTotalBalance(thisMonth);
+  const totalBalance = await getTotalBalance();
 
   const totalIncome = await getTotalIncome(thisMonth);
   const totalIncomeLastMonth = await getTotalIncome(lastMonth);
@@ -142,7 +143,7 @@ export default async function DashboardPage() {
           <CardContent>
             <div className="space-y-8">
               {recentTransactions.length > 0 ? (
-                recentTransactions.map((transaction) => (
+                recentTransactions.map((transaction: TTransaction) => (
                   <ListTransaction
                     transaction={transaction}
                     key={transaction.id}

@@ -19,18 +19,13 @@ export async function getUserIdFromSession() {
   return session.user.id;
 }
 
-export async function getTotalBalance(timeFrame: {
-  startDate: Date;
-  endDate: Date;
-}) {
+export async function getTotalBalance() {
   const userId = await getUserIdFromSession();
-  const { startDate, endDate } = ZTimeFrame.parse(timeFrame);
 
   const [income, expenses] = await Promise.all([
     prisma.transaction.aggregate({
       where: {
         type: "INCOME",
-        date: { gte: startDate, lte: endDate },
         userId,
       },
       _sum: { amount: true },
@@ -38,7 +33,6 @@ export async function getTotalBalance(timeFrame: {
     prisma.transaction.aggregate({
       where: {
         type: "EXPENSE",
-        date: { gte: startDate, lte: endDate },
         userId,
       },
       _sum: { amount: true },
