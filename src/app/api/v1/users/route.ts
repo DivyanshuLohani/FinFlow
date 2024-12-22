@@ -20,7 +20,6 @@ export const POST = async (request: NextRequest) => {
 
     return Response.json(user);
   } catch (e: any) {
-    console.log(e);
     if (e.message === "User with this email already exists") {
       return Response.json(
         {
@@ -29,15 +28,14 @@ export const POST = async (request: NextRequest) => {
         },
         { status: e.statusCode }
       );
-    } else {
-      return Response.json(
-        {
-          error: e.message,
-          errorCode: e.code,
-        },
-        { status: 500 }
-      );
     }
+    return Response.json(
+      {
+        error: e.message,
+        errorCode: e.code,
+      },
+      { status: 500 }
+    );
   }
 };
 
