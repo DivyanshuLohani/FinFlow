@@ -9,6 +9,7 @@ import GoogleButton from "../../components/GoogleButton";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 interface SignupFormProps {
   googleEnabled: boolean;
@@ -21,7 +22,6 @@ export default function SignInForm({
 }: SignupFormProps) {
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [submitting, setSubmiting] = useState(false);
-  const [error, setError] = useState<string>("");
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
 
@@ -30,17 +30,24 @@ export default function SignInForm({
     setSubmiting(true);
 
     try {
-      await signIn("credentials", {
+      const response = await signIn("credentials", {
         email: e.target.elements.email.value,
         password: e.target.elements.password.value,
         redirect: false,
       });
       //TODO: error handling
-
-      router.push("/");
+      console.log(response);
+      if (!response || !response.ok) {
+        const errMsg = response?.error ?? "Something went wrong";
+        // setError(errMsg);
+        toast.error(errMsg);
+      } else {
+        router.push("/");
+      }
     } catch (e: any) {
       if (e.message) {
-        setError(e.message);
+        // setError(e.message);
+        toast.error(e.message);
       }
     } finally {
       setSubmiting(false);
@@ -56,7 +63,6 @@ export default function SignInForm({
         <p className="mt-2 text-sm text-muted-foreground">
           Please sign in to your account
         </p>
-        {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
       </div>
 
       <div className=" space-y-4">
