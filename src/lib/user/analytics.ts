@@ -1,3 +1,4 @@
+import "server-only";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { authOptions } from "../auth/authOptions";
