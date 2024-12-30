@@ -52,9 +52,21 @@ const formSchema = z.object({
   amount: z
     .string()
     .min(1, "Amount is required")
-    .refine((val) => !isNaN(Number(val)), {
-      message: "Amount must be a valid number",
-    }),
+    .refine((val) => /^[0-9+\-*/.\s]+$/.test(val), {
+      message: "Amount must contain only numbers and +, -, *, / operators",
+    })
+    .refine(
+      (val) => {
+        try {
+          // Evaluate the expression safely
+          // eslint-disable-next-line no-eval
+          return !isNaN(eval(val));
+        } catch {
+          return false;
+        }
+      },
+      { message: "Amount must be a valid mathematical expression" }
+    ),
   categoryId: z.string().min(1, "Category is required"),
   date: z.date({
     required_error: "Date is required",
@@ -121,7 +133,24 @@ export default function AddIncomeDialog({
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Input placeholder="0.00" {...field} />
+                      <Input
+                        placeholder="0.00"
+                        {...field}
+                        onBlur={(e) => {
+                          const value = e.target.value;
+                          try {
+                            // Evaluate the expression safely
+                            // eslint-disable-next-line no-eval
+                            const evaluatedValue = eval(value);
+                            if (!isNaN(evaluatedValue)) {
+                              field.onChange(evaluatedValue.toString());
+                            }
+                          } catch {
+                            // Handle invalid input gracefully
+                            field.onChange("");
+                          }
+                        }}
+                      />
                     </div>
                   </FormControl>
                   <FormDescription>Enter the amount.</FormDescription>
