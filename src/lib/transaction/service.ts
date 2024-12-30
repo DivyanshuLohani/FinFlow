@@ -47,12 +47,15 @@ export async function getCategories() {
 
 export async function getTransactions(
   page: number,
-  startDate?: Date,
-  endDate?: Date,
+  startDate?: Date | string,
+  endDate?: Date | string,
   perPage?: number
 ): Promise<[TTransaction[], number]> {
   const session = await getServerSession(authOptions);
   if (!session) throw new Error("Unauthorized");
+
+  if (typeof startDate == "string") startDate = new Date(startDate);
+  if (typeof endDate == "string") endDate = new Date(endDate);
 
   const userId = session.user.id;
   const take = perPage || 50;

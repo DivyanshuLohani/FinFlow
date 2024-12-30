@@ -14,9 +14,12 @@ export function titleCase(str: string) {
 }
 
 export function formatDate(
-  date: Date,
+  date: Date | string,
   style: Intl.DateTimeFormatOptions["dateStyle"] = "long"
 ) {
+  if (typeof date === "string") {
+    date = new Date(date);
+  }
   return new Intl.DateTimeFormat("en-GB", {
     dateStyle: style,
   }).format(date);

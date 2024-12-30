@@ -1,13 +1,23 @@
 import { TTimeFrame } from "@/types/common";
 
 export function getTimeFrame(
-  a: "day" | "week" | "month" | "quater" | "semester" | "year"
+  a: "day" | "week" | "month" | "quater" | "semester" | "year" | "yesterday"
 ): TTimeFrame {
   switch (a) {
     case "day":
       return {
         startDate: new Date(new Date().setHours(0, 0, 0, 0)),
         endDate: new Date(new Date().setHours(23, 59, 59, 999)),
+      };
+    case "yesterday":
+      const yesterday = new Date(new Date().setDate(new Date().getDate() - 1));
+      yesterday.setHours(-18, 0, 0, 0);
+      const yesterdayEnd = new Date(yesterday.setDate(yesterday.getDate() + 1));
+      yesterdayEnd.setHours(23, 59, 59, 999);
+
+      return {
+        startDate: yesterday,
+        endDate: yesterdayEnd,
       };
     case "week":
       const now = new Date();

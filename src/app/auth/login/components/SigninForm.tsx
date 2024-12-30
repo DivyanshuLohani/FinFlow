@@ -35,8 +35,6 @@ export default function SignInForm({
         password: e.target.elements.password.value,
         redirect: false,
       });
-      //TODO: error handling
-      console.log(response);
       if (!response || !response.ok) {
         const errMsg = response?.error ?? "Something went wrong";
         // setError(errMsg);

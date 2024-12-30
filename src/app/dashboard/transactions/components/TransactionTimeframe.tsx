@@ -5,19 +5,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { twMerge } from "tailwind-merge";
 
 interface TransactionTimeframeProps {
   timeFrame: string;
   setTimeFrame: (type: string) => void;
+  className?: string;
 }
 
 export default function TransactionTimeframe({
   timeFrame,
   setTimeFrame,
+  className,
 }: TransactionTimeframeProps) {
   return (
     <Select value={timeFrame} onValueChange={setTimeFrame}>
-      <SelectTrigger className="w-full sm:w-[180px]">
+      <SelectTrigger className={twMerge("w-full sm:w-[180px]", className)}>
         <SelectValue placeholder="Filter by type" />
       </SelectTrigger>
       <SelectContent>

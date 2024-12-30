@@ -1,5 +1,5 @@
 import { authOptions } from "@/lib/auth/authOptions";
-import { createTransaction } from "@/lib/transaction/service";
+import { createTransaction, getTransactions } from "@/lib/transaction/service";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { NextRequest } from "next/server";
@@ -25,4 +25,14 @@ export async function POST(request: NextRequest) {
     console.log(error);
     return Response.json({ error: "Something went wrong" }, { status: 500 });
   }
+}
+
+export async function GET(request: NextRequest) {
+  const { timeFrame } = await request.json();
+  const session = await getServerSession(authOptions);
+  if (!session)
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+  const transactions = await getTransactions(timeFrame);
+  return Response.json(transactions);
 }

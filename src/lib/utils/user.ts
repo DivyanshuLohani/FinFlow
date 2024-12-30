@@ -18,7 +18,6 @@ export const createUser = async (
     });
     if (res.status !== 200 || !res.ok) {
       const json = await res.json();
-      console.log(json);
       throw Error(json.error);
     }
     return await res.json();
