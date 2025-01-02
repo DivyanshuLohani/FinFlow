@@ -1,7 +1,7 @@
 "use client";
 import { getTimeFrame } from "@/lib/utils/time";
 import { TTransaction } from "@/types/transaction";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getTransactions } from "../actions";
 import {
   Table,
@@ -22,9 +22,9 @@ import ExportData from "./ExportData";
 export default function TransactionList() {
   const [transactions, setTransactions] = useState<TTransaction[]>([]);
   const [isFetching, setIsFetching] = useState(true);
-  const [hasMore, setHasMore] = useState<boolean>(false);
+  // const [hasMore, setHasMore] = useState<boolean>(false);
   const [timeFrame, setTimeFrame] = useState("all");
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
 
   const [sortConfig, setSortConfig] = useState({
     key: "date",
@@ -32,7 +32,7 @@ export default function TransactionList() {
   });
   const [filterType, setFilterType] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const hasMoreObserver = useRef<HTMLDivElement>(null);
+  // const hasMoreObserver = useRef<HTMLDivElement>(null);
 
   const handleSort = (key: string) => {
     let direction = "asc";
