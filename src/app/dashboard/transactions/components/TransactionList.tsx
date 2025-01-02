@@ -17,12 +17,13 @@ import TransactionRow from "./TransactionRow";
 import { TransactionsSkeleton } from "./loading";
 import TransactionFilter from "./TransactionFilter";
 import TransactionTimeframe from "./TransactionTimeframe";
+import ExportData from "./ExportData";
 
 export default function TransactionList() {
   const [transactions, setTransactions] = useState<TTransaction[]>([]);
   const [isFetching, setIsFetching] = useState(true);
   const [hasMore, setHasMore] = useState<boolean>(false);
-  const [timeFrame, setTimeFrame] = useState("month");
+  const [timeFrame, setTimeFrame] = useState("all");
   const [page, setPage] = useState(1);
 
   const [sortConfig, setSortConfig] = useState({
@@ -61,14 +62,10 @@ export default function TransactionList() {
   };
 
   const fetchTransactions = useCallback(async () => {
-    setTransactions([]);
     setIsFetching(true);
     const res = await getTransactions(page, getTimeFrame(timeFrame as any));
-    setTransactions((prev) => {
-      setHasMore(res.total === transactions.length ? false : true);
-      if (page === 1) setHasMore(false);
-      return [...prev, ...res.transactions];
-    });
+    setTransactions(res.transactions);
+
     setIsFetching(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, timeFrame]);
@@ -77,20 +74,20 @@ export default function TransactionList() {
     fetchTransactions();
   }, [fetchTransactions]);
 
-  useEffect(() => {
-    if (!window || !hasMoreObserver.current) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isFetching) {
-          setPage((prev) => prev + 1);
-          console.log("Fetch More");
-        }
-      },
-      { threshold: 0.6 }
-    );
-    observer.observe(hasMoreObserver.current);
-    return () => observer.disconnect();
-  }, [hasMore, isFetching]);
+  // useEffect(() => {
+  //   if (!window || !hasMoreObserver.current) return;
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       if (entries[0].isIntersecting && hasMore && !isFetching) {
+  //         setPage((prev) => prev + 1);
+  //         console.log("Fetch More");
+  //       }
+  //     },
+  //     { threshold: 0.6 }
+  //   );
+  //   observer.observe(hasMoreObserver.current);
+  //   return () => observer.disconnect();
+  // }, [hasMore, isFetching]);
 
   const filteredTransactions = useMemo(
     () =>
@@ -128,6 +125,7 @@ export default function TransactionList() {
             timeFrame={timeFrame}
             setTimeFrame={setTimeFrame}
           />
+          <ExportData transactions={transactions} />
         </div>
       </div>
       {isFetching ? (
@@ -199,12 +197,12 @@ export default function TransactionList() {
               ))}
             </TableBody>
           </Table>
-          <div
+          {/* <div
             ref={hasMoreObserver}
             className="h-10 flex items-center justify-center"
           >
             {isFetching && hasMore && <p>Loading more transactions...</p>}
-          </div>
+          </div> */}
         </div>
       )}
     </div>

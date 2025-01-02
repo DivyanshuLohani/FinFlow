@@ -1,0 +1,106 @@
+"use client";
+
+import { useState, useEffect, useMemo } from "react";
+import { Input } from "@/components/ui/input";
+import { toast } from "react-toastify";
+import { type Category } from "@prisma/client";
+import { z } from "zod";
+import { AddCategoryModal } from "./components/AddCategoryDialog";
+import CategoryCard from "./components/CategoryCard";
+import { Skeleton } from "@/components/ui/skeleton";
+
+export type TCategory = Category & {
+  transactions: number;
+  totalIncome: number;
+  totalExpenses: number;
+};
+
+export const categoryCreateSchema = z.object({
+  name: z.string().min(1, "Category name is required"),
+});
+
+function CategoryCardSkeleton() {
+  return (
+    <div className="rounded-xl border bg-card text-card-foreground shadow animate-pulse">
+      <Skeleton className="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
+        <Skeleton className="w-1/3 h-4 rounded"></Skeleton>
+        <Skeleton className="h-8 w-8 rounded-full "></Skeleton>
+      </Skeleton>
+      <Skeleton className="p-6 pt-0">
+        <Skeleton className="h-6  rounded w-full"></Skeleton>
+      </Skeleton>
+    </div>
+  );
+}
+
+export default function CategoriesPage() {
+  const [isFetching, setIsFetching] = useState(true);
+  const [categories, setCategories] = useState<TCategory[]>([]);
+  const [search, setSearch] = useState<string>("");
+
+  const filteredCategories = useMemo(
+    () =>
+      categories.filter((category) =>
+        category.name.toLowerCase().includes(search.toLowerCase())
+      ),
+    [categories, search]
+  );
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      setIsFetching(true);
+      try {
+        const fetchedCategories = await fetch("/api/v1/categories");
+        if (!fetchedCategories.ok) {
+          toast.error("Failed to load categories. Please try again.");
+          return;
+        }
+        const data = await fetchedCategories.json();
+        setCategories(data);
+      } catch {
+        toast.error("Failed to load categories. Please try again.");
+      } finally {
+        setIsFetching(false);
+      }
+    };
+    loadCategories();
+  }, []);
+
+  return (
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Manage Categories</h1>
+
+      <div className="flex mb-4">
+        <Input
+          type="text"
+          placeholder="Search a category name"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="mr-2"
+        />
+        <AddCategoryModal
+          onAddCategory={(category) =>
+            setCategories((prev) => [...prev, category])
+          }
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {isFetching &&
+          Array.from({ length: 12 }).map((_, index) => (
+            <CategoryCardSkeleton key={index} />
+          ))}
+
+        {filteredCategories.map((category) => (
+          <CategoryCard
+            key={category.id}
+            category={category}
+            onDelete={(c) => {
+              setCategories((prev) => prev.filter((cat) => cat.id !== c.id));
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}

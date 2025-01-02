@@ -71,7 +71,7 @@ model Transaction {
 model Category {
   id     String       @id @default(cuid())
   name   String
-  type   CategoryType
+  // type   CategoryType
   userId String
 
   user         User          @relation(fields: [userId], references: [id])

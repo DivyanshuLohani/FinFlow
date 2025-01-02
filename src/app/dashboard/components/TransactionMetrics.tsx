@@ -19,13 +19,6 @@ export default function TransactionMetrics() {
     return totalIncome - totalExpense;
   }, [totalIncome, totalExpense]);
 
-  const percentageTotalIncome = 0;
-  //  totalIncomeLastMonth === 0
-  //    ? 0
-  //    : ((totalIncome - totalIncomeLastMonth) / totalIncomeLastMonth) * 100;
-
-  const percentageTotalExpenses = 0;
-
   useEffect(() => {
     setIsFetching(true);
     const tF = getTimeFrame(timeFrame as any);
@@ -75,18 +68,6 @@ export default function TransactionMetrics() {
             <div className="text-2xl font-bold">
               {formatCurrency(totalIncome)}
             </div>
-
-            <p className="text-xs text-muted-foreground">
-              <span
-                className={
-                  percentageTotalIncome >= 0 ? "text-green-500" : "text-red-500"
-                }
-              >
-                {percentageTotalIncome >= 0 ? "+" : "-"}{" "}
-                {percentageTotalIncome.toFixed(2)}%
-              </span>{" "}
-              from last month
-            </p>
           </CardContent>
         </Card>
         <Card>
@@ -101,35 +82,8 @@ export default function TransactionMetrics() {
             <div className="text-2xl font-bold">
               {formatCurrency(totalExpense)}
             </div>
-
-            <p className="text-xs text-muted-foreground">
-              <span
-                className={
-                  percentageTotalExpenses >= 0
-                    ? "text-green-500"
-                    : "text-red-500"
-                }
-              >
-                {percentageTotalExpenses >= 0 ? "+ " : "- "}
-                {percentageTotalExpenses.toFixed(2)}%
-              </span>{" "}
-              from last month
-            </p>
           </CardContent>
         </Card>
-        {/* <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Budget</CardTitle>
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${budget.toFixed(2)}</div>
-            <Progress value={budgetProgress} className="mt-2" />
-            <p className="text-xs text-muted-foreground mt-2">
-              {budgetProgress.toFixed(1)}% of budget used
-            </p>
-          </CardContent>
-        </Card> */}
       </div>
     </div>
   );

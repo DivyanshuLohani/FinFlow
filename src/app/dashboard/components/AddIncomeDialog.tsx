@@ -174,14 +174,11 @@ export default function AddIncomeDialog({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {categories.map(
-                        (category) =>
-                          category.type === type && (
-                            <SelectItem key={category.id} value={category.id}>
-                              {category.name}
-                            </SelectItem>
-                          )
-                      )}
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormDescription>

@@ -38,8 +38,51 @@ export async function getCategories() {
   if (!session) throw new Error("Unauthorized");
 
   try {
-    const categories = await prisma.category.findMany();
+    const categories = await prisma.category.findMany({
+      where: {
+        userId: session.user.id,
+      },
+    });
     return categories;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function createCategory(name: string) {
+  const session = await getServerSession(authOptions);
+  if (!session) throw new Error("Unauthorized");
+
+  try {
+    const category = await prisma.category.create({
+      data: {
+        name: name,
+        userId: session.user.id,
+      },
+    });
+    return category;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function deleteCategory(id: string) {
+  const session = await getServerSession(authOptions);
+  if (!session) throw new Error("Unauthorized");
+  try {
+    await prisma.transaction.deleteMany({
+      where: {
+        categoryId: id,
+        userId: session.user.id,
+      },
+    });
+    const deletedCategory = await prisma.category.delete({
+      where: {
+        id,
+        userId: session.user.id,
+      },
+    });
+    return deletedCategory;
   } catch (error) {
     throw error;
   }

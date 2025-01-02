@@ -5,13 +5,14 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { Home, PieChart, List, Settings } from "lucide-react";
+import { Home, PieChart, List, Settings, LayoutGrid } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const links = [
   { icon: Home, label: "Dashboard", href: "/dashboard" },
   { icon: List, label: "Transactions", href: "/dashboard/transactions" },
   { icon: PieChart, label: "Reports", href: "/dashboard/reports" },
+  { icon: LayoutGrid, label: "Categories", href: "/dashboard/categories" },
   { icon: Settings, label: "Settings", href: "/dashboard/settings" },
 ];
 

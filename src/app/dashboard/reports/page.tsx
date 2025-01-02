@@ -22,17 +22,6 @@ export default async function ReportsPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Financial Reports</h1>
-        {/* <Select value={timeRange} onValueChange={setTimeRange}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select time range" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="thisMonth">This Month</SelectItem>
-            <SelectItem value="lastMonth">Last Month</SelectItem>
-            <SelectItem value="last3Months">Last 3 Months</SelectItem>
-            <SelectItem value="thisYear">This Year</SelectItem>
-          </SelectContent>
-        </Select> */}
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">

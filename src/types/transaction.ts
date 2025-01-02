@@ -3,7 +3,6 @@ import { z } from "zod";
 export const ZCategory = z.object({
   id: z.string().cuid(),
   name: z.string(),
-  type: z.enum(["INCOME", "EXPENSE"]),
   userId: z.string().cuid(),
 });
 

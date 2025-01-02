@@ -1,5 +1,5 @@
 import "server-only";
-import { CategoryType, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import {
   TUser,
   TUserCreateInput,
@@ -159,43 +159,42 @@ export const createUser = async (data: TUserCreateInput): Promise<TUser> => {
     await prisma.category.createMany({
       data: defaultCategories.map((category) => ({
         name: category.name,
-        type: category.type as CategoryType,
         userId: user.id,
       })),
     });
 
-    const categories = await prisma.category.findMany({
-      where: { userId: user.id },
-    });
+    // const categories = await prisma.category.findMany({
+    //   where: { userId: user.id },
+    // });
 
-    await Promise.all(
-      categories.map((category) => {
-        const matchingDefault = defaultCategories.find(
-          (c) => c.name === category.name
-        );
+    // await Promise.all(
+    //   categories.map((category) => {
+    //     const matchingDefault = defaultCategories.find(
+    //       (c) => c.name === category.name
+    //     );
 
-        if (matchingDefault?.budget) {
-          return prisma.budget.create({
-            data: {
-              amount: matchingDefault.budget.amount,
-              startDate: new Date(
-                new Date().getFullYear(),
-                new Date().getMonth(),
-                1
-              ),
-              endDate: new Date(
-                new Date().getFullYear(),
-                new Date().getMonth() + 1,
-                0
-              ),
-              categoryId: category.id,
-              userId: user.id,
-            },
-          });
-        }
-        return null;
-      })
-    );
+    //     if (matchingDefault?.budget) {
+    //       return prisma.budget.create({
+    //         data: {
+    //           amount: matchingDefault.budget.amount,
+    //           startDate: new Date(
+    //             new Date().getFullYear(),
+    //             new Date().getMonth(),
+    //             1
+    //           ),
+    //           endDate: new Date(
+    //             new Date().getFullYear(),
+    //             new Date().getMonth() + 1,
+    //             0
+    //           ),
+    //           categoryId: category.id,
+    //           userId: user.id,
+    //         },
+    //       });
+    //     }
+    //     return null;
+    //   })
+    // );
 
     return user as TUser;
   } catch (error) {
