@@ -41,7 +41,7 @@ export default function TransactionMetrics() {
     gTIS(tF);
   }, [timeFrame]);
   if (isFetching) {
-    <SkeletonLoader />;
+    return <SkeletonLoader />;
   }
 
   return (

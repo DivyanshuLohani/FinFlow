@@ -1,7 +1,15 @@
 import { TTimeFrame } from "@/types/common";
 
 export function getTimeFrame(
-  a: "day" | "week" | "month" | "quater" | "semester" | "year" | "yesterday"
+  a:
+    | "day"
+    | "week"
+    | "month"
+    | "quater"
+    | "semester"
+    | "year"
+    | "yesterday"
+    | "all"
 ): TTimeFrame {
   switch (a) {
     case "day":
@@ -74,6 +82,11 @@ export function getTimeFrame(
           59,
           999
         ),
+      };
+    case "all":
+      return {
+        startDate: new Date(1970, 0, 1),
+        endDate: new Date(),
       };
   }
   return {

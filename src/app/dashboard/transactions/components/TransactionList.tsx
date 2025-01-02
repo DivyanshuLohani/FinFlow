@@ -1,7 +1,7 @@
 "use client";
 import { getTimeFrame } from "@/lib/utils/time";
 import { TTransaction } from "@/types/transaction";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getTransactions } from "../actions";
 import {
   Table,
@@ -21,9 +21,9 @@ import TransactionTimeframe from "./TransactionTimeframe";
 export default function TransactionList() {
   const [transactions, setTransactions] = useState<TTransaction[]>([]);
   const [isFetching, setIsFetching] = useState(true);
-  // const [hasMore, setHasMore] = useState<boolean>(true);
+  const [hasMore, setHasMore] = useState<boolean>(false);
   const [timeFrame, setTimeFrame] = useState("month");
-  // const [page, setPage] = useState(1);
+  const [page, setPage] = useState(1);
 
   const [sortConfig, setSortConfig] = useState({
     key: "date",
@@ -31,6 +31,7 @@ export default function TransactionList() {
   });
   const [filterType, setFilterType] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const hasMoreObserver = useRef<HTMLDivElement>(null);
 
   const handleSort = (key: string) => {
     let direction = "asc";
@@ -59,26 +60,52 @@ export default function TransactionList() {
     setTransactions(sortedTransactions);
   };
 
-  const filteredTransactions = transactions.filter((transaction) => {
-    const matchesType = filterType === "all" || transaction.type === filterType;
-    const matchesSearch =
-      transaction.category.name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      transaction.amount.toString().includes(searchTerm);
-    return matchesType && matchesSearch;
-  });
+  const fetchTransactions = useCallback(async () => {
+    setTransactions([]);
+    setIsFetching(true);
+    const res = await getTransactions(page, getTimeFrame(timeFrame as any));
+    setTransactions((prev) => {
+      setHasMore(res.total === transactions.length ? false : true);
+      if (page === 1) setHasMore(false);
+      return [...prev, ...res.transactions];
+    });
+    setIsFetching(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, timeFrame]);
 
   useEffect(() => {
-    const fetchTransactions = async () => {
-      setIsFetching(true);
-      const res = await getTransactions(1, getTimeFrame(timeFrame as any));
-      setTransactions(res.transactions as TTransaction[]);
-      // setHasMore(res.total === transactions.length ? false : true);
-      setIsFetching(false);
-    };
     fetchTransactions();
-  }, [timeFrame, transactions.length]);
+  }, [fetchTransactions]);
+
+  useEffect(() => {
+    if (!window || !hasMoreObserver.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isFetching) {
+          setPage((prev) => prev + 1);
+          console.log("Fetch More");
+        }
+      },
+      { threshold: 0.6 }
+    );
+    observer.observe(hasMoreObserver.current);
+    return () => observer.disconnect();
+  }, [hasMore, isFetching]);
+
+  const filteredTransactions = useMemo(
+    () =>
+      transactions.filter((transaction) => {
+        const matchesType =
+          filterType === "all" || transaction.type === filterType;
+        const matchesSearch =
+          transaction.category.name
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          transaction.amount.toString().includes(searchTerm);
+        return matchesType && matchesSearch;
+      }),
+    [transactions, filterType, searchTerm]
+  );
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -172,6 +199,12 @@ export default function TransactionList() {
               ))}
             </TableBody>
           </Table>
+          <div
+            ref={hasMoreObserver}
+            className="h-10 flex items-center justify-center"
+          >
+            {isFetching && hasMore && <p>Loading more transactions...</p>}
+          </div>
         </div>
       )}
     </div>

@@ -24,6 +24,7 @@ export default function TransactionTimeframe({
         <SelectValue placeholder="Filter by type" />
       </SelectTrigger>
       <SelectContent>
+        <SelectItem value="all">All</SelectItem>
         <SelectItem value="day">Today</SelectItem>
         <SelectItem value="yesterday">Yesterday</SelectItem>
         <SelectItem value="week">This Week</SelectItem>
