@@ -3,21 +3,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
-import { type Category } from "@prisma/client";
-import { z } from "zod";
 import { AddCategoryModal } from "./components/AddCategoryDialog";
 import CategoryCard from "./components/CategoryCard";
 import { Skeleton } from "@/components/ui/skeleton";
-
-export type TCategory = Category & {
-  transactions: number;
-  totalIncome: number;
-  totalExpenses: number;
-};
-
-export const categoryCreateSchema = z.object({
-  name: z.string().min(1, "Category name is required"),
-});
+import { TCategory } from "@/types/transaction";
 
 function CategoryCardSkeleton() {
   return (

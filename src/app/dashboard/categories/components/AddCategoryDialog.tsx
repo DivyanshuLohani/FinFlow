@@ -14,8 +14,9 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "react-toastify";
-import { categoryCreateSchema, TCategory } from "../page";
+
 import { createCategory } from "../actions";
+import { categoryCreateSchema, TCategory } from "@/types/transaction";
 
 type AddCategoryModalProps = {
   onAddCategory: (category: TCategory) => any;

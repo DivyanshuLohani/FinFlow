@@ -1,3 +1,4 @@
+import { type Category } from "@prisma/client";
 import { z } from "zod";
 // Category Schema
 export const ZCategory = z.object({
@@ -18,3 +19,15 @@ export const ZTransaction = z.object({
 });
 
 export type TTransaction = z.infer<typeof ZTransaction>;
+
+export type TCategory = Category & {
+  transactions: number;
+  totalIncome: number;
+  totalExpenses: number;
+};
+
+export const categoryCreateSchema = z.object({
+  name: z.string().min(1, "Category name is required"),
+});
+
+export type TCategoryCreateInput = z.infer<typeof categoryCreateSchema>;
