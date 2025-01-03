@@ -97,7 +97,8 @@ export const authOptions: NextAuthOptions = {
         }
 
         if (user.emailVerified) {
-          throw new AuthenticationError("Email already verified");
+          return user;
+          // throw new AuthenticationError("Email already verified");
         }
 
         user = await updateUser(user.id, {
