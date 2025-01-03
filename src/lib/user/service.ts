@@ -22,6 +22,7 @@ const responseSelection = {
   image: true,
   createdAt: true,
   updatedAt: true,
+  isAdmin: true,
 };
 
 // function to retrive basic information about a user's user

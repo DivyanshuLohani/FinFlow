@@ -3,8 +3,8 @@ import localFont from "next/font/local";
 import { ThemeProvider } from "@/providers/theme-provider";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
-
 import "react-toastify/dist/ReactToastify.css";
+import { SessionProvider } from "@/providers/session-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,7 +33,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
+          <SessionProvider>{children}</SessionProvider>
           <ToastContainer position="top-center" />
         </ThemeProvider>
       </body>

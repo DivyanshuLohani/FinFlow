@@ -6,7 +6,6 @@ import { EMAIL_VERIFICATION_DISABLED } from "../constants";
 import { getUserByEmail, updateUser } from "../user/service";
 import { AuthenticationError } from "@/types/errors";
 import { verifyToken } from "../jwt";
-// import type { IdentityProvider } from "@prisma/client";
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -58,6 +57,8 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           emailVerified: user.emailVerified,
           imageUrl: user.image,
+          name: user.name,
+          isAdmin: user.isAdmin,
         };
       },
     }),
@@ -133,7 +134,7 @@ export const authOptions: NextAuthOptions = {
 
       return {
         ...token,
-        profile: { id: existingUser.id },
+        profile: { id: existingUser.id, isAdmin: existingUser.isAdmin },
       };
     },
     async session({ session, token }) {
