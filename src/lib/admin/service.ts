@@ -2,7 +2,6 @@ import { getServerSession } from "next-auth";
 import "server-only";
 import { prisma } from "../database/prisma";
 import { authOptions } from "../auth/authOptions";
-import jwt from "jsonwebtoken";
 import { createToken } from "../jwt";
 
 export async function getAdminData() {
