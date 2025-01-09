@@ -1,39 +1,84 @@
-![image](https://github.com/user-attachments/assets/91bc7556-c92f-4ddb-9750-a5470c8a3bf5)
 
+# Finflow
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+![Finflow Placeholder Image](https://github.com/user-attachments/assets/91bc7556-c92f-4ddb-9750-a5470c8a3bf5)
 
-## Getting Started
+**Finflow** is a powerful expense tracker that helps you monitor your expenses and manage your income effectively. Choose between default categories or create your own for a personalized experience.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Expense/Income Addition**: Easily add and categorize your expenses and income.
+- **Customized Reports**: Generate detailed reports for your transactions.
+- **Graphs and Charts**: Visualize your spending with graph comparisons and pie charts.
+- **Data Export**: Export your transaction data for external use.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Upcoming Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Recurring Transactions**: Automate frequent expenses or income.
+- **Budget Management**: Set and track spending limits for specific categories.
+- **Multi-Currency Support**: Handle expenses and income in different currencies.
+- **Mobile App Integration**: Access Finflow on the go with a companion mobile app.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![PostgREST](https://img.shields.io/badge/Postgres-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Local Setup
 
-## Deploy on Vercel
+### Prerequisites
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Ensure you have the following installed:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Node.js** (v16 or later)
+- **npm** or **yarn**
+- **PostgreSQL** database
+
+### Steps to Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/finflow.git
+   cd finflow
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Set up the database using Prisma:
+   ```bash
+   npx prisma migrate dev
+   ```
+
+4. Copy the environment file and configure:
+   ```bash
+   cp .env.example .env
+   ```
+   Fill in the necessary details in the `.env` file, such as your database connection string and other configurations.
+
+5. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+6. Open the app in your browser at `http://localhost:3000`.
+
+---
+
+## Contributing
+
+We welcome contributions! Please open an issue or submit a pull request to suggest features or fixes.
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
