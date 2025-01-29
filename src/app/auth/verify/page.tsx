@@ -4,7 +4,7 @@ import EmailVerificationContent from "./components/EmailVerifcationContent";
 export default async function VerifyEmailPage({
   searchParams,
 }: {
-  searchParams: { token: string };
+  searchParams: any;
 }) {
   const { token } = await searchParams;
 

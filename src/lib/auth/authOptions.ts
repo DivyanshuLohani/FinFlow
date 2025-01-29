@@ -78,6 +78,16 @@ export const authOptions: NextAuthOptions = {
             throw new Error("Token not found");
           }
           const { id } = await verifyToken(credentials?.token);
+          const existingToken = await prisma.verificationToken.findUnique({
+            where: {
+              identifier: id,
+              token: credentials?.token,
+            },
+          });
+          if (!existingToken) {
+            throw new Error("Invalid token");
+          }
+
           user = await prisma.user.findUnique({
             where: {
               id: id,
@@ -100,6 +110,14 @@ export const authOptions: NextAuthOptions = {
           return user;
           // throw new AuthenticationError("Email already verified");
         }
+
+        // Delete the token
+        await prisma.verificationToken.delete({
+          where: {
+            identifier: user.id,
+            token: credentials?.token,
+          },
+        });
 
         user = await updateUser(user.id, {
           emailVerified: new Date(),

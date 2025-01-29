@@ -6,11 +6,10 @@ export const createToken = (
   userEmail: string,
   options = {}
 ): string => {
-  return jwt.sign(
-    { id: userId },
-    process.env.NEXTAUTH_SECRET + userEmail,
-    options
-  );
+  return jwt.sign({ id: userId }, process.env.NEXTAUTH_SECRET + userEmail, {
+    expiresIn: "15d",
+    ...options,
+  });
 };
 
 export const verifyToken = async (

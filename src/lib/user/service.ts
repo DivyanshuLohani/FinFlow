@@ -141,8 +141,7 @@ export const createUser = async (data: TUserCreateInput): Promise<TUser> => {
     });
 
     if (!EMAIL_VERIFICATION_DISABLED) {
-      const token = createToken(user.id, user.email);
-      await sendVerificationEmail(user.email, token, user.name ?? "User");
+      await generateVerificationToken(user.email);
     }
 
     return user as TUser;
@@ -179,6 +178,7 @@ export const deleteUser = async (id: string): Promise<TUser> => {
   }
 };
 
+// This functions generates and sends the email to the user
 export async function generateVerificationToken(email: string) {
   const user = await getUserByEmail(email);
 
@@ -191,6 +191,14 @@ export async function generateVerificationToken(email: string) {
   }
 
   const token = createToken(user.id, user.email);
+
+  await prisma.verificationToken.create({
+    data: {
+      identifier: user.id,
+      token,
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 15), // 15 days,
+    },
+  });
 
   if (!EMAIL_VERIFICATION_DISABLED) {
     await sendVerificationEmail(user.email, token, user.name ?? "User");
