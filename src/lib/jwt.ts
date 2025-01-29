@@ -12,33 +12,6 @@ export const createToken = (
     options
   );
 };
-export const createTokenForLinkSurvey = (
-  surveyId: string,
-  userEmail: string
-): string => {
-  return jwt.sign({ email: userEmail }, process.env.NEXTAUTH_SECRET + surveyId);
-};
-
-export const createInviteToken = (
-  inviteId: string,
-  email: string,
-  options = {}
-): string => {
-  return jwt.sign(
-    { inviteId, email },
-    process.env.NEXTAUTH_SECRET as string,
-    options
-  );
-};
-
-export const verifyTokenForLinkSurvey = (token: string, surveyId: string) => {
-  try {
-    const payload = jwt.verify(token, process.env.NEXTAUTH_SECRET + surveyId);
-    return (payload as jwt.JwtPayload).email || null;
-  } catch {
-    return null;
-  }
-};
 
 export const verifyToken = async (
   token: string,

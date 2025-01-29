@@ -11,6 +11,9 @@ export const GITHUB_AUTH_ENABLED = GITHUB_ID && GITHUB_SECRET ? true : false;
 export const GOOGLE_AUTH_ENABLED =
   GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET ? true : false;
 
+export const RESEND_API_KEY = process.env.RESEND_API_KEY;
+export const EMAILS_ENABLED = RESEND_API_KEY ? true : false;
+
 export const defaultCategories = [
   {
     name: "Groceries",

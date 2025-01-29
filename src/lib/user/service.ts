@@ -12,7 +12,9 @@ import { prisma } from "../database/prisma";
 import { ZId } from "@/types/common";
 import { z } from "zod";
 import { DatabaseError, ResourceNotFoundError } from "@/types/errors";
-import { defaultCategories } from "../constants";
+import { defaultCategories, EMAIL_VERIFICATION_DISABLED } from "../constants";
+import { createToken } from "../jwt";
+import { sendVerificationEmail } from "../email/service";
 
 const responseSelection = {
   id: true,
@@ -73,32 +75,6 @@ export const getUserByEmail = async (email: string) => {
     throw error;
   }
 };
-
-// export const getUserByEmail = reactCache((email: string) =>
-//   cache(async () => {
-//     validateInputs([email, z.string().email()]);
-
-//     try {
-//       const user = await prisma.user.findUnique({
-//         where: {
-//           email,
-//         },
-//         select: responseSelection,
-//       });
-
-//       if (!user) {
-//         return null;
-//       }
-//       return user;
-//     } catch (error) {
-//       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-//         throw new DatabaseError(error.message);
-//       }
-
-//       throw error;
-//     }
-//   })
-// );
 
 // function to update a user's user
 export const updateUser = async (
@@ -164,38 +140,10 @@ export const createUser = async (data: TUserCreateInput): Promise<TUser> => {
       })),
     });
 
-    // const categories = await prisma.category.findMany({
-    //   where: { userId: user.id },
-    // });
-
-    // await Promise.all(
-    //   categories.map((category) => {
-    //     const matchingDefault = defaultCategories.find(
-    //       (c) => c.name === category.name
-    //     );
-
-    //     if (matchingDefault?.budget) {
-    //       return prisma.budget.create({
-    //         data: {
-    //           amount: matchingDefault.budget.amount,
-    //           startDate: new Date(
-    //             new Date().getFullYear(),
-    //             new Date().getMonth(),
-    //             1
-    //           ),
-    //           endDate: new Date(
-    //             new Date().getFullYear(),
-    //             new Date().getMonth() + 1,
-    //             0
-    //           ),
-    //           categoryId: category.id,
-    //           userId: user.id,
-    //         },
-    //       });
-    //     }
-    //     return null;
-    //   })
-    // );
+    if (!EMAIL_VERIFICATION_DISABLED) {
+      const token = createToken(user.id, user.email);
+      await sendVerificationEmail(user.email, token, user.name ?? "User");
+    }
 
     return user as TUser;
   } catch (error) {
@@ -230,3 +178,23 @@ export const deleteUser = async (id: string): Promise<TUser> => {
     throw error;
   }
 };
+
+export async function generateVerificationToken(email: string) {
+  const user = await getUserByEmail(email);
+
+  if (!user) {
+    throw new ResourceNotFoundError("User", email);
+  }
+
+  if (user.emailVerified) {
+    throw new DatabaseError("User already verified");
+  }
+
+  const token = createToken(user.id, user.email);
+
+  if (!EMAIL_VERIFICATION_DISABLED) {
+    await sendVerificationEmail(user.email, token, user.name ?? "User");
+  }
+
+  return token;
+}
