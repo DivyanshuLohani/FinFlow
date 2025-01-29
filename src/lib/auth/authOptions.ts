@@ -2,10 +2,16 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { verifyPassword } from "./utils";
 import { prisma } from "../database/prisma";
-import { EMAIL_VERIFICATION_DISABLED } from "../constants";
-import { getUserByEmail, updateUser } from "../user/service";
+import {
+  EMAIL_VERIFICATION_DISABLED,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+} from "../constants";
+import { createUser, getUserByEmail, updateUser } from "../user/service";
 import { AuthenticationError } from "@/types/errors";
 import { verifyToken } from "../jwt";
+import GoogleProvider from "next-auth/providers/google";
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -132,11 +138,11 @@ export const authOptions: NextAuthOptions = {
     //   clientId: GITHUB_ID || "",
     //   clientSecret: GITHUB_SECRET || "",
     // }),
-    // GoogleProvider({
-    //   clientId: GOOGLE_CLIENT_ID || "",
-    //   clientSecret: GOOGLE_CLIENT_SECRET || "",
-    //   allowDangerousEmailAccountLinking: true,
-    // }),
+    GoogleProvider({
+      clientId: GOOGLE_CLIENT_ID || "",
+      clientSecret: GOOGLE_CLIENT_SECRET || "",
+      allowDangerousEmailAccountLinking: true,
+    }),
     // AzureAD({
     //   clientId: AZUREAD_CLIENT_ID || "",
     //   clientSecret: AZUREAD_CLIENT_SECRET || "",
@@ -172,62 +178,37 @@ export const authOptions: NextAuthOptions = {
         }
         return true;
       }
-
       if (!user.email || account.type !== "oauth") {
         return false;
       }
 
-      // if (account.provider) {
-      //   // const provider = account.provider
-      //   //   .toLowerCase()
-      //   //   .replace("-", "") as AuthProvider;
-      //   // check if accounts for this provider / account Id already exists
-      //   const existingUserWithAccount = await prisma.user.findFirst({
-      //     include: {
-      //       accounts: {
-      //         where: {
-      //           authProvider: account.provider,
-      //         },
-      //       },
-      //     },
-      //   });
+      if (account.type == "oauth") {
+        // check if user account with this email already exists
+        const existingUserWithEmail = await getUserByEmail(user.email);
+        console.log(existingUserWithEmail);
+        if (existingUserWithEmail) {
+          return true;
+        }
 
-      //   if (existingUserWithAccount) {
-      //     // User with this provider found
-      //     // check if email still the same
-      //     if (existingUserWithAccount.email === user.email) {
-      //       return true;
-      //     }
+        // The user does not exists on the server so we create one
 
-      //     // user seemed to change his email within the provider
-      //     // check if user with this email already exist
-      //     // if not found just update user with new email address
-      //     // if found throw an error (TODO find better solution)
-      //     const otherUserWithEmail = await getUserByEmail(user.email);
+        createUser({
+          name:
+            user.name ||
+            user.email
+              .split("@")[0]
+              .replace(/[^'\p{L}\p{M}\s\d-]+/gu, " ")
+              .trim(),
+          email: user.email,
+          image: user.image,
+          password: null,
+          emailVerified: new Date(Date.now()),
+        });
 
-      //     if (!otherUserWithEmail) {
-      //       await updateUser(existingUserWithAccount.id, { email: user.email });
-      //       return true;
-      //     }
-      //     throw new Error(
-      //       "Looks like you updated your email somewhere else. A user with this new email exists already."
-      //     );
-      //   }
+        return true;
+      }
 
-      //   // There is no existing account for this identity provider / account id
-      //   // check if user account with this email already exists
-      //   // if user already exists throw error and request password login
-      //   const existingUserWithEmail = await getUserByEmail(user.email);
-
-      //   if (existingUserWithEmail) {
-      //     // Sign in the user with the existing account
-      //     return true;
-      //   }
-
-      //   return true;
-      // }
-
-      return true;
+      throw new Error("Invalid account type");
     },
   },
   pages: {

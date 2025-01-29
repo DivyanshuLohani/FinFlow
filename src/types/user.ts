@@ -22,8 +22,10 @@ export const ZUserCreateInput = z.object({
     .email({ message: "Invalid email address" }),
   password: z
     .string({ message: "Password is required" })
-    .min(8, { message: "Password must be at least 8 characters" }),
+    .min(8, { message: "Password must be at least 8 characters" })
+    .nullable(),
   image: z.string().url().optional().nullable().default(null),
+  emailVerified: z.date().nullable().default(null).optional(),
 });
 
 export type TUserCreateInput = z.infer<typeof ZUserCreateInput>;
@@ -38,7 +40,7 @@ export const ZUserUpdateInput = z.object({
     .nullable()
     .optional(),
   emailVerified: z.date().nullable().optional(),
-  image: z.string().url().optional().nullable().default(null),
+  image: z.string().url().optional().nullable(),
 });
 
 export type TUserUpdateInput = z.infer<typeof ZUserUpdateInput>;

@@ -11,6 +11,7 @@ import {
 import NavLinks from "./components/NavLinks";
 import ThemeSwitch from "@/components/ThemeSwitcher";
 import ClientLogout from "@/components/ClientLogout";
+import AppLogo from "@/components/AppLogo";
 
 export const metadata: Metadata = {
   title: "Fin Flow",
@@ -39,7 +40,7 @@ export default function RootLayout({
         </Sidebar>
         <SidebarInset className="flex flex-col flex-grow overflow-auto">
           <header className="sticky top-0 z-10 bg-background border-b p-4 flex justify-between items-center">
-            <h1 className="text-2xl font-bold">Fin Flow</h1>
+            <AppLogo />
             <div className="md-hidden">
               <SidebarTrigger />
             </div>

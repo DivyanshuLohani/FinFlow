@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Mail, Github } from "lucide-react";
 import GoogleButton from "../../components/GoogleButton";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "react-toastify";
 
@@ -24,6 +24,12 @@ export default function SignInForm({
   const [submitting, setSubmiting] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    if (searchParams.get("error")) {
+      toast.error(searchParams.get("error") ?? "Something went wrong");
+    }
+  }, [searchParams]);
 
   const handleEmailLogin = async (e: any) => {
     e.preventDefault();
