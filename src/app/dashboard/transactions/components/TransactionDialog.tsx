@@ -31,13 +31,16 @@ import { toast } from "react-toastify";
 interface TransactionDialogProps {
   transaction: TTransaction;
   setTransactions: React.Dispatch<React.SetStateAction<TTransaction[]>>;
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function TransactionDialog({
   transaction,
   setTransactions,
+  isOpen,
+  setIsOpen,
 }: TransactionDialogProps) {
-  const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {

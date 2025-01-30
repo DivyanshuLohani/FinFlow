@@ -7,7 +7,12 @@ import {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
 } from "../constants";
-import { createUser, getUserByEmail, updateUser } from "../user/service";
+import {
+  createUser,
+  getUserByEmail,
+  updateUser,
+  generateVerificationToken,
+} from "../user/service";
 import { AuthenticationError } from "@/types/errors";
 import { verifyToken } from "../jwt";
 import GoogleProvider from "next-auth/providers/google";
@@ -174,6 +179,7 @@ export const authOptions: NextAuthOptions = {
       if (account.provider === "credentials" || account.provider === "token") {
         // check if user's email is verified or not
         if (!user.emailVerified && !EMAIL_VERIFICATION_DISABLED) {
+          await generateVerificationToken(user.email);
           throw new Error("Email Verification is Pending");
         }
         return true;

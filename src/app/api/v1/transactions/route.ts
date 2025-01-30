@@ -21,8 +21,7 @@ export async function POST(request: NextRequest) {
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/transactions");
     return Response.json(transaction, { status: 201 });
-  } catch (error) {
-    console.log(error);
+  } catch {
     return Response.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

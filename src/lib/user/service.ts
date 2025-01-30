@@ -190,19 +190,36 @@ export async function generateVerificationToken(email: string) {
     throw new DatabaseError("User already verified");
   }
 
-  const token = createToken(user.id, user.email);
-
-  await prisma.verificationToken.create({
-    data: {
+  const existingToken = await prisma.verificationToken.findFirst({
+    where: {
       identifier: user.id,
-      token,
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 15), // 15 days,
     },
   });
+  if (existingToken) {
+    if (!EMAIL_VERIFICATION_DISABLED) {
+      await sendVerificationEmail(
+        user.email,
+        existingToken.token,
+        user.name ?? "User"
+      );
+    }
 
-  if (!EMAIL_VERIFICATION_DISABLED) {
-    await sendVerificationEmail(user.email, token, user.name ?? "User");
+    return existingToken.token;
+  } else {
+    const token = createToken(user.id, user.email);
+
+    await prisma.verificationToken.create({
+      data: {
+        identifier: user.id,
+        token,
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 15), // 15 days,
+      },
+    });
+
+    if (!EMAIL_VERIFICATION_DISABLED) {
+      await sendVerificationEmail(user.email, token, user.name ?? "User");
+    }
+
+    return token;
   }
-
-  return token;
 }

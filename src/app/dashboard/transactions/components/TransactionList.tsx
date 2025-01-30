@@ -18,8 +18,9 @@ import { TransactionsSkeleton } from "./loading";
 import TransactionFilter from "./TransactionFilter";
 import TransactionTimeframe from "./TransactionTimeframe";
 import ExportData from "./ExportData";
+import AddIncomeDialog from "../../components/AddIncomeDialog";
 
-export default function TransactionList() {
+export default function TransactionList({ categories }: { categories: any }) {
   const [transactions, setTransactions] = useState<TTransaction[]>([]);
   const [isFetching, setIsFetching] = useState(true);
   // const [hasMore, setHasMore] = useState<boolean>(false);
@@ -135,17 +136,6 @@ export default function TransactionList() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">
-                  <Button
-                    variant="ghost"
-                    className="p-0 hover:bg-transparent"
-                    onClick={() => handleSort("type")}
-                  >
-                    <span className="sr-only">Sort by Type</span>
-                    Type
-                    <ArrowUpDown className="ml-1 h-4 w-4" />
-                  </Button>
-                </TableHead>
                 <TableHead>
                   <Button
                     variant="ghost"
@@ -179,7 +169,7 @@ export default function TransactionList() {
                     <ArrowUpDown className="ml-1 h-4 w-4" />
                   </Button>
                 </TableHead>
-                <TableHead className="text-right">
+                <TableHead className="text-right hidden sm:inline">
                   <Button variant="ghost" className="p-0 hover:bg-transparent">
                     <span className="sr-only">Sort by Date</span>
                     Actions
@@ -205,6 +195,9 @@ export default function TransactionList() {
           </div> */}
         </div>
       )}
+      <div className="fixed right-8 bottom-8">
+        <AddIncomeDialog categories={categories} compact />
+      </div>
     </div>
   );
 }

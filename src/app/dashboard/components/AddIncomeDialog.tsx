@@ -4,7 +4,12 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { ArrowDownIcon, ArrowUpIcon, CalendarIcon } from "lucide-react";
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  CalendarIcon,
+  PlusIcon,
+} from "lucide-react";
 import { format } from "date-fns";
 
 import { cn } from "@/lib/utils";
@@ -45,7 +50,8 @@ import { createTransaction } from "@/lib/transaction";
 
 interface AddTransactionDialogProps {
   categories: Category[];
-  type: TransactionType;
+  type?: TransactionType;
+  compact?: boolean;
 }
 
 const formSchema = z.object({
@@ -72,11 +78,13 @@ const formSchema = z.object({
     required_error: "Date is required",
   }),
   description: z.string().optional(),
+  type: z.nativeEnum(TransactionType),
 });
 
 export default function AddIncomeDialog({
   categories,
   type,
+  compact,
 }: AddTransactionDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [open, setOpen] = useState(false);
@@ -88,6 +96,7 @@ export default function AddIncomeDialog({
       categoryId: "",
       date: new Date(),
       description: "",
+      type: type || TransactionType.INCOME,
     },
   });
 
@@ -95,7 +104,7 @@ export default function AddIncomeDialog({
     setIsSubmitting(true);
 
     try {
-      await createTransaction({ ...values, type });
+      await createTransaction({ ...values });
       toast.success("Transaction added successfully");
     } catch {
       toast.error("Something went wrong");
@@ -109,14 +118,20 @@ export default function AddIncomeDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full">
-          {type === TransactionType.INCOME ? (
-            <ArrowUpIcon className="mr-2 h-4 w-4" />
-          ) : (
-            <ArrowDownIcon className="mr-2 h-4 w-4" />
-          )}
-          Add {type === TransactionType.INCOME ? "Income" : "Expense"}
-        </Button>
+        {compact ? (
+          <Button className="w-16 h-16 rounded-full">
+            <PlusIcon height={50} width={50} className="w-full h-full" />
+          </Button>
+        ) : (
+          <Button className="w-full">
+            {type === TransactionType.INCOME ? (
+              <ArrowUpIcon className="mr-2 h-4 w-4" />
+            ) : (
+              <ArrowDownIcon className="mr-2 h-4 w-4" />
+            )}
+            Add {type === TransactionType.INCOME ? "Income" : "Expense"}
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogTitle>
@@ -125,6 +140,37 @@ export default function AddIncomeDialog({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            {!type && (
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Type</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select transaction type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value={TransactionType.INCOME}>
+                          Income
+                        </SelectItem>
+                        <SelectItem value={TransactionType.EXPENSE}>
+                          Expense
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>Transaction Type</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="amount"
@@ -253,8 +299,8 @@ export default function AddIncomeDialog({
               {isSubmitting
                 ? "Adding..."
                 : type === TransactionType.INCOME
-                ? "Add Income"
-                : "Add Expense"}
+                  ? "Add Income"
+                  : "Add Expense"}
             </Button>
           </form>
         </Form>

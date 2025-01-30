@@ -16,33 +16,33 @@ export default function TransactionRow({
   transaction,
   setTransactions,
 }: TransactionRowProps) {
+  const [isOpen, setIsOpen] = React.useState(false);
   const isMobile = useIsMobile();
   return (
-    <TableRow key={transaction.id}>
-      <TableCell className="font-medium">
+    <TableRow key={transaction.id} onClick={() => setIsOpen(true)}>
+      <TableCell>{transaction.category.name}</TableCell>
+      <TableCell className="text-right">
         {transaction.type === "INCOME" ? (
           <span className="flex items-center text-green-600">
-            <ArrowUp className="mr-1 h-4 w-4" />
-            <span className="hidden sm:inline">Income</span>
+            <ArrowUp className="mr-1 h-4 w-4 hidden sm:inline" />
+            <span className="">+{formatCurrency(transaction.amount)}</span>
           </span>
         ) : (
           <span className="flex items-center text-red-600">
-            <ArrowDown className="mr-1 h-4 w-4" />
-            <span className="hidden sm:inline">Expense</span>
+            <ArrowDown className="mr-1 h-4 w-4 hidden sm:inline" />
+            <span className="">{formatCurrency(-1 * transaction.amount)}</span>
           </span>
         )}
-      </TableCell>
-      <TableCell>{transaction.category.name}</TableCell>
-      <TableCell className="text-right">
-        {formatCurrency(transaction.amount)}
       </TableCell>
       <TableCell className="text-right whitespace-nowrap">
         {isMobile
           ? formatDate(transaction.date, "short")
           : formatDate(transaction.date)}
       </TableCell>
-      <TableCell className="text-right whitespace-nowrap">
+      <TableCell className="text-right whitespace-nowrap hidden sm:inline">
         <TransactionDialog
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
           transaction={transaction}
           setTransactions={setTransactions}
         />

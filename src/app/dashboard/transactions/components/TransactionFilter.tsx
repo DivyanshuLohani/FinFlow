@@ -22,7 +22,7 @@ export default function TransactionFilter({
         <SelectValue placeholder="Filter by type" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="all">All Transactions</SelectItem>
+        <SelectItem value="all">All Type</SelectItem>
         <SelectItem value="INCOME">Income</SelectItem>
         <SelectItem value="EXPENSE">Expenses</SelectItem>
       </SelectContent>
