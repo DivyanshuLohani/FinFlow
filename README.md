@@ -1,7 +1,7 @@
 
 # Finflow
 
-![Finflow Placeholder Image](https://github.com/user-attachments/assets/91bc7556-c92f-4ddb-9750-a5470c8a3bf5)
+![Finflow Placeholder Image](https://github.com/user-attachments/assets/9b6a3769-f8e2-431c-a044-86c06f74152e)
 
 **Finflow** is a powerful expense tracker that helps you monitor your expenses and manage your income effectively. Choose between default categories or create your own for a personalized experience.
 
