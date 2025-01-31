@@ -59,7 +59,7 @@ export default function Navbar() {
               </Link>
             ))}
             <Link
-              href="#get-started"
+              href="/auth/signup/"
               className="px-6 py-2 bg-gradient-to-r from-gray-600 to-gray-800 text-white font-semibold rounded-lg shadow-lg hover:from-gray-800 hover:to-black transition-all duration-300 ease-in-out transform hover:-translate-y-0.5"
             >
               Get Started
