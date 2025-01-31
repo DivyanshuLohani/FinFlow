@@ -2,6 +2,7 @@ import { authOptions } from "@/lib/auth/authOptions";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import React from "react";
+import WrapperSignup from "./components/Wrapper";
 
 export default async function AuthLayout({
   children,
@@ -13,5 +14,5 @@ export default async function AuthLayout({
     redirect("/dashboard");
   }
 
-  return children;
+  return <WrapperSignup>{children}</WrapperSignup>;
 }

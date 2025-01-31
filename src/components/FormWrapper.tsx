@@ -6,7 +6,7 @@ export default function FormWrapper({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
+    <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md space-y-8 p-8 bg-card rounded-xl shadow-lg">
         {children}
       </div>

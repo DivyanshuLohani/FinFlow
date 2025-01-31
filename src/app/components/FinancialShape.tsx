@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
 export default function FinancialShape({
   className,
@@ -18,8 +19,11 @@ export default function FinancialShape({
   rotate?: number;
   gradient?: string;
 }) {
+  const pathname = usePathname(); // Detects route changes
+
   return (
     <motion.div
+      key={pathname} // Forces reanimation on page change
       initial={{
         opacity: 0,
         y: -150,
