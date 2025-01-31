@@ -1,9 +1,17 @@
-import { authOptions } from "@/lib/auth/authOptions";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+"use client";
 
-export default async function Home() {
-  const session = await getServerSession(authOptions);
-  if (session) redirect("/dashboard");
-  else redirect("/auth/login");
+import CTASection from "./components/cta";
+import FeaturesSection from "./components/features-section";
+import FooterSection from "./components/footer";
+import HeroSection from "./components/hero-section";
+
+export default function HeroFinancialBlack() {
+  return (
+    <>
+      <HeroSection />
+      <FeaturesSection />
+      <CTASection />
+      <FooterSection />
+    </>
+  );
 }
