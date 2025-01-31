@@ -126,6 +126,7 @@ export default function FeaturesSection() {
         "relative bg-black text-white py-20 overflow-hidden",
         inter.variable
       )}
+      id="features"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-gray-900/[0.05] via-transparent to-gray-800/[0.05] blur-3xl" />
 
