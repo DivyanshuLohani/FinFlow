@@ -19,11 +19,7 @@ export const EmailVerification = ({
   token: string;
   name: string;
 }) => {
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : process.env.NEXTAUTH_URL
-      ? process.env.NEXTAUTH_URL
-      : "http://localhost:3000";
+  const baseUrl = `https://finflow.divyanshulohani.xyz`;
   const verificationUrl = `${baseUrl}/auth/verify?token=${token}`;
 
   return (
