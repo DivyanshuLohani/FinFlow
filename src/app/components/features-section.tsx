@@ -41,10 +41,15 @@ const ImageFeature = ({ image, title, description }: FeatureProps) => {
           objectFit="cover"
           className="transition-transform duration-300 ease-in-out group-hover:scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 opacity-70 transition-opacity duration-300 ease-in-out group-hover:opacity-90" />
+        {/* Gradient Overlay - Always visible on mobile */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black md:hidden z-10" />
+        {/* Darker gradient on hover - Only for larger screens */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black transition-opacity duration-300 ease-in-out md:block hidden" />
       </div>
-      <div className="absolute inset-0 flex flex-col justify-end p-6">
-        <h3 className="text-2xl font-bold text-white mb-2">{title}</h3>
+      <div className="absolute inset-0 flex flex-col justify-end p-6 z-50">
+        <h3 className="text-2xl font-bold text-white transition-transform duration-300 ease-in-out group-hover:-translate-y-4 translate-y-8">
+          {title}
+        </h3>
         <p className="text-gray-300 opacity-0 transform translate-y-4 transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:translate-y-0">
           {description}
         </p>

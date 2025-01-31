@@ -5,6 +5,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import FinancialShape from "./FinancialShape";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 export default function HeroSection({
   badge = "FinFlow",
@@ -27,6 +28,9 @@ export default function HeroSection({
       },
     }),
   };
+
+  const session = useSession();
+
   return (
     <div
       className={cn(
@@ -147,7 +151,9 @@ export default function HeroSection({
               href={"/auth/signup/"}
               className="px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-900 text-white font-semibold rounded-lg shadow-lg hover:from-gray-800 hover:to-black transition duration-300 ease-in-out transform hover:-translate-y-1 border border-gray-600"
             >
-              Start Your Financial Journey
+              {session.data?.user
+                ? "Go to Dashboard"
+                : "Start Your Financial Journey"}
             </Link>
           </motion.div>
         </div>
