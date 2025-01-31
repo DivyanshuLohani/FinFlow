@@ -6,6 +6,7 @@ import { Inter } from "next/font/google";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,6 +29,8 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const session = useSession();
 
   return (
     <nav
@@ -62,7 +65,7 @@ export default function Navbar() {
               href="/auth/signup/"
               className="px-6 py-2 bg-gradient-to-r from-gray-600 to-gray-800 text-white font-semibold rounded-lg shadow-lg hover:from-gray-800 hover:to-black transition-all duration-300 ease-in-out transform hover:-translate-y-0.5"
             >
-              Get Started
+              {session.data?.user ? "Go to App" : "Get Started"}
             </Link>
           </div>
 
@@ -102,7 +105,7 @@ export default function Navbar() {
                 className="block mt-4 px-6 py-2 bg-gradient-to-r from-gray-600 to-gray-800 text-white font-semibold rounded-lg shadow-lg hover:from-gray-800 hover:to-black/80 transition duration-300 ease-in-out transform hover:-translate-y-0.5 text-center"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Get Started
+                {session.data?.user ? "Go to App" : "Get Started"}
               </Link>
             </div>
           </motion.div>

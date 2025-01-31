@@ -208,7 +208,6 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           image: user.image,
           password: null,
-          emailVerified: new Date(Date.now()),
         });
 
         return true;
