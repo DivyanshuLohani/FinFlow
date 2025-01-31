@@ -64,7 +64,7 @@ export default function SignupForm({
     <>
       <div className="text-center">
         <h2 className="mt-6 text-3xl font-bold text-foreground">
-          Welcome to APP NAME
+          Welcome to Fin Flow
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">
           Create an account to get started.
