@@ -3,14 +3,7 @@
 import { motion } from "framer-motion";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
-import {
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
-  Mail,
-  Phone,
-} from "lucide-react";
+import { Twitter, Instagram, Linkedin, Mail } from "lucide-react";
 import type React from "react";
 import Link from "next/link";
 
@@ -39,7 +32,7 @@ const socialLinks = [
 
 const footerLinks = [
   { label: "About Me", href: "https://divyanshulohani.xyz" },
-  { label: "Features", href: "#featues" },
+  { label: "Features", href: "#features" },
   { label: "Privacy Policy", href: "/privacy" },
 ];
 

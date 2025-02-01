@@ -46,7 +46,7 @@ export default function SignInForm({
         // setError(errMsg);
         toast.error(errMsg);
       } else {
-        router.push("/");
+        router.push("/dashboard");
       }
     } catch (e: any) {
       if (e.message) {
