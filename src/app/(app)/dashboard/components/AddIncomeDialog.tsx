@@ -241,13 +241,13 @@ export default function AddIncomeDialog({
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Date</FormLabel>
-                  <Popover>
+                  <Popover modal>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
                           variant={"outline"}
                           className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
+                            "w-[240px] pl-3 justify-start text-left font-normal",
                             !field.value && "text-muted-foreground"
                           )}
                         >
@@ -268,7 +268,6 @@ export default function AddIncomeDialog({
                         disabled={(date) =>
                           date > new Date() || date < new Date("1900-01-01")
                         }
-                        initialFocus
                       />
                     </PopoverContent>
                   </Popover>
