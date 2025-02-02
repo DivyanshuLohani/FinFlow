@@ -5,6 +5,7 @@ export const ZCategory = z.object({
   id: z.string().cuid(),
   name: z.string(),
   userId: z.string().cuid(),
+  special: z.boolean().default(false),
 });
 
 export const ZTransaction = z.object({

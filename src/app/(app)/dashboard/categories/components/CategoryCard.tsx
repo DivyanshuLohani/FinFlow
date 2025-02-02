@@ -33,8 +33,12 @@ export default function CategoryCard({
       await deleteCategory(category.id);
       if (onDelete) onDelete(category);
       toast.success("Category deleted successfully!");
-    } catch {
-      toast.error("Something went wrong");
+    } catch (error: any) {
+      if (error.message) {
+        toast.error(error.message);
+      } else {
+        toast.error("Something went wrong");
+      }
     }
   };
   return (

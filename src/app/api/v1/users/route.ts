@@ -50,7 +50,6 @@ export const PATCH = async (request: NextRequest) => {
     const updatedUser = await updateUser(session.user.id, user);
     return Response.json(updatedUser);
   } catch (e: any) {
-    console.log(e);
     return Response.json(
       {
         error: e.message,

@@ -25,7 +25,7 @@ export const ZUserCreateInput = z.object({
     .min(8, { message: "Password must be at least 8 characters" })
     .nullable(),
   image: z.string().url().optional().nullable().default(null),
-  emailVerified: z.date().nullable().default(null).optional(),
+  emailVerified: z.date().optional().nullable().default(null),
 });
 
 export type TUserCreateInput = z.infer<typeof ZUserCreateInput>;

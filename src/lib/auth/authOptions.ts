@@ -191,7 +191,6 @@ export const authOptions: NextAuthOptions = {
       if (account.type == "oauth") {
         // check if user account with this email already exists
         const existingUserWithEmail = await getUserByEmail(user.email);
-        console.log(existingUserWithEmail);
         if (existingUserWithEmail) {
           return true;
         }
@@ -208,6 +207,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           image: user.image,
           password: null,
+          emailVerified: new Date(Date.now()),
         });
 
         return true;

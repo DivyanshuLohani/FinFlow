@@ -26,6 +26,7 @@ export default function EmailVerificationContent({
   token?: string;
 }) {
   const [isVerifying, setIsVerifying] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isVerified, setIsVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -37,7 +38,6 @@ export default function EmailVerificationContent({
       redirect: false,
       token,
     });
-    console.log(response);
     if (response && !response.ok) {
       if (response.error === "TokenExpiredError") {
         toast.error("Verification link has expired.");

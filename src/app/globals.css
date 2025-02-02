@@ -76,6 +76,14 @@ body {
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+  ::-webkit-scrollbar {
+    width: 0.5rem;
+    background-color: var(--border);
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--primary);
+    border-radius: var(--radius);
+  }
 }
 
 @layer base {
@@ -84,5 +92,26 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+    scrollbar-width: thin; /* Thin scrollbar for Firefox */
+    scrollbar-color: var(--sidebar-background) transparent; /* Thumb and track colors */
+  }
+  ::-webkit-scrollbar {
+    width: 10px; /* Scrollbar width */
+    height: 10px; /* Scrollbar height */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #909090; /* Thumb color */
+    border-radius: 10px; /* Rounded corners */
+    border: 2px solid transparent; /* Add space around thumb */
+    background-clip: padding-box; /* Ensure the border doesn't overlap */
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #606060; /* Darker thumb color on hover */
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent; /* Transparent track */
   }
 }

@@ -24,7 +24,6 @@ export default function RecentTransactions() {
     fetch("/api/v1/transactions/recent")
       .then((res) => res.json())
       .then((data) => setRecentTransactions(data))
-      .catch((err) => console.log(err))
       .finally(() => setIsFetching(false));
   }, []);
 

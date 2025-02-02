@@ -9,7 +9,6 @@ export async function sendVerificationEmail(
   token: string,
   name: string
 ) {
-  console.log(email, token, name);
   try {
     await resend.emails.send({
       from: "FinFlow <team@divyanshulohani.xyz>",

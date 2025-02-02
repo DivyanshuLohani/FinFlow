@@ -3,6 +3,8 @@ import { prisma } from "../database/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/authOptions";
 import { TTransaction } from "@/types/transaction";
+import { validateInputs } from "../utils/validate";
+import { ZId } from "@/types/common";
 
 export async function createTransaction(data: any) {
   try {
@@ -67,22 +69,59 @@ export async function createCategory(name: string) {
 }
 
 export async function deleteCategory(id: string) {
+  validateInputs([id, ZId]);
   const session = await getServerSession(authOptions);
   if (!session) throw new Error("Unauthorized");
+
+  let othersCategory = await prisma.category.findFirst({
+    where: {
+      userId: session.user.id,
+      special: true,
+      name: "Others",
+    },
+  });
+  if (id === othersCategory?.id) {
+    throw new Error("Cannot delete 'Others' category");
+  }
+  if (!othersCategory) {
+    othersCategory = await prisma.category.create({
+      data: {
+        name: "Others",
+        special: true,
+        userId: session.user.id,
+      },
+    });
+  }
+
+  const category = await prisma.category.findUnique({
+    where: {
+      id,
+      userId: session.user.id,
+    },
+  });
+  if (!category) {
+    throw new Error("Category not found");
+  }
+  if (category.special) {
+    throw new Error("Cannot delete special category");
+  }
+
   try {
-    await prisma.transaction.deleteMany({
+    await prisma.transaction.updateMany({
       where: {
         categoryId: id,
         userId: session.user.id,
       },
+      data: {
+        categoryId: othersCategory.id,
+      },
     });
-    const deletedCategory = await prisma.category.delete({
+    await prisma.category.delete({
       where: {
         id,
         userId: session.user.id,
       },
     });
-    return deletedCategory;
   } catch (error) {
     throw error;
   }

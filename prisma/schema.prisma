@@ -75,7 +75,7 @@ model Category {
   name   String
   // type   CategoryType
   userId String
-
+  special Boolean @default(false)
   user         User          @relation(fields: [userId], references: [id])
   transactions Transaction[]
   budgets       Budget[]

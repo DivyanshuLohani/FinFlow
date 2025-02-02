@@ -21,7 +21,8 @@ export async function deleteCategory(categoryId: string) {
   });
 
   if (!res.ok) {
-    throw new Error("Failed to delete category");
+    const error = await res.json();
+    throw new Error(error.message);
   }
 
   return res.status;

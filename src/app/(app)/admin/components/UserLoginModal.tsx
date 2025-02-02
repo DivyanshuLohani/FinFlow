@@ -37,7 +37,7 @@ export default function UserLoginModal({
         redirect: false,
       });
       if (success && success.ok) {
-        router.push("/");
+        router.push("/dashboard");
         toast.success(`Logged in as ${userName}`);
       } else {
         toast.error("Failed to log in. Please try again.");

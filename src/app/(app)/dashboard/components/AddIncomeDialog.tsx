@@ -133,7 +133,7 @@ export default function AddIncomeDialog({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className={"overflow-y-scroll max-h-screen"}>
         <DialogTitle>
           Add {type === TransactionType.INCOME ? "Income" : "Expense"}
         </DialogTitle>
@@ -199,7 +199,10 @@ export default function AddIncomeDialog({
                       />
                     </div>
                   </FormControl>
-                  <FormDescription>Enter the amount.</FormDescription>
+                  <FormDescription>
+                    Enter the amount. <br /> You can also use operators like +,
+                    -, *, /
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -230,6 +233,7 @@ export default function AddIncomeDialog({
                   <FormDescription>
                     Select the category of{" "}
                     {type === TransactionType.INCOME ? "income" : "expense"}.
+                    <br /> You can add categories in the categories tab.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

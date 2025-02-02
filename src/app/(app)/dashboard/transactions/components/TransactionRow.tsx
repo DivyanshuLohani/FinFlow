@@ -39,7 +39,7 @@ export default function TransactionRow({
           ? formatDate(transaction.date, "short")
           : formatDate(transaction.date)}
       </TableCell>
-      <TableCell className="text-right whitespace-nowrap hidden sm:inline">
+      <TableCell className="text-right whitespace-nowrap hidden sm:block">
         <TransactionDialog
           isOpen={isOpen}
           setIsOpen={setIsOpen}
