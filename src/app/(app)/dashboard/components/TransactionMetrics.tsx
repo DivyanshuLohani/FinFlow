@@ -10,7 +10,7 @@ import { getTotalExpenses, getTotalIncome } from "../actions";
 import SkeletonLoader from "./SkeletonLoaderT";
 
 export default function TransactionMetrics() {
-  const [timeFrame, setTimeFrame] = useState<string>("month");
+  const [timeFrame, setTimeFrame] = useState<TTimeFrame>(getTimeFrame("month"));
   const [totalExpense, setTotalExpense] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
   const [isFetching, setIsFetching] = useState(true);
@@ -21,9 +21,8 @@ export default function TransactionMetrics() {
 
   useEffect(() => {
     setIsFetching(true);
-    const tF = getTimeFrame(timeFrame as any);
 
-    const gTIS = async (timeFrame: TTimeFrame) => {
+    const gTIS = async () => {
       const income = await getTotalIncome(timeFrame);
       const expenses = await getTotalExpenses(timeFrame);
       setTotalIncome(income);
@@ -31,7 +30,7 @@ export default function TransactionMetrics() {
       setIsFetching(false);
     };
 
-    gTIS(tF);
+    gTIS();
   }, [timeFrame]);
   if (isFetching) {
     return <SkeletonLoader />;

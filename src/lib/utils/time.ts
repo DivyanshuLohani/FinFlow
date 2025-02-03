@@ -1,16 +1,14 @@
 import { TTimeFrame } from "@/types/common";
 
-export function getTimeFrame(
-  a:
-    | "day"
-    | "week"
-    | "month"
-    | "quater"
-    | "semester"
-    | "year"
-    | "yesterday"
-    | "all"
-): TTimeFrame {
+export type SupportedFrames =
+  | "day"
+  | "week"
+  | "month"
+  | "year"
+  | "yesterday"
+  | "all";
+
+export function getTimeFrame(a: SupportedFrames): TTimeFrame {
   switch (a) {
     case "day":
       return {
@@ -50,39 +48,7 @@ export function getTimeFrame(
           999
         ),
       };
-    case "quater":
-      const currentMonth = new Date().getMonth();
-      const quarter = Math.floor(currentMonth / 3);
-      const firstMonth = quarter * 3;
-      const lastMonth = firstMonth + 2;
-      return {
-        startDate: new Date(new Date().getFullYear(), firstMonth, 1),
-        endDate: new Date(
-          new Date().getFullYear(),
-          lastMonth + 1,
-          0,
-          23,
-          59,
-          59,
-          999
-        ),
-      };
-    case "semester":
-      const semester = Math.floor(new Date().getMonth() / 6);
-      const firstMonthSemester = semester * 6;
-      const lastMonthSemester = firstMonthSemester + 5;
-      return {
-        startDate: new Date(new Date().getFullYear(), firstMonthSemester, 1),
-        endDate: new Date(
-          new Date().getFullYear(),
-          lastMonthSemester + 1,
-          0,
-          23,
-          59,
-          59,
-          999
-        ),
-      };
+
     case "all":
       return {
         startDate: new Date(1970, 0, 1),
@@ -93,4 +59,66 @@ export function getTimeFrame(
     startDate: new Date(),
     endDate: new Date(),
   };
+}
+
+export function getFrameFromDates(
+  timeFrame: TTimeFrame
+): SupportedFrames | { type: "custom"; startDate: Date; endDate: Date } {
+  const { startDate, endDate } = timeFrame;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayEnd = new Date();
+  todayEnd.setHours(23, 59, 59, 999);
+
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  const yesterdayEnd = new Date(yesterday);
+  yesterdayEnd.setHours(23, 59, 59, 999);
+
+  const weekStart = new Date(today);
+  weekStart.setDate(today.getDate() - today.getDay());
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekStart.getDate() + 6);
+  weekEnd.setHours(23, 59, 59, 999);
+
+  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  const monthEnd = new Date(
+    today.getFullYear(),
+    today.getMonth() + 1,
+    0,
+    23,
+    59,
+    59,
+    999
+  );
+
+  if (
+    startDate.getTime() === today.getTime() &&
+    endDate.getTime() === todayEnd.getTime()
+  ) {
+    return "day";
+  }
+  if (
+    startDate.getTime() === yesterday.getTime() &&
+    endDate.getTime() === yesterdayEnd.getTime()
+  ) {
+    return "yesterday";
+  }
+  if (
+    startDate.getTime() === weekStart.getTime() &&
+    endDate.getTime() === weekEnd.getTime()
+  ) {
+    return "week";
+  }
+  if (
+    startDate.getTime() === monthStart.getTime() &&
+    endDate.getTime() === monthEnd.getTime()
+  ) {
+    return "month";
+  }
+  if (startDate.getFullYear() === 1970 && startDate.getMonth() === 0) {
+    return "all";
+  }
+
+  return { type: "custom", startDate, endDate };
 }

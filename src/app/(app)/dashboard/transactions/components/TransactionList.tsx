@@ -29,7 +29,7 @@ export default function TransactionList({
   const [transactions, setTransactions] = useState<TTransaction[]>([]);
   const [isFetching, setIsFetching] = useState(true);
   // const [hasMore, setHasMore] = useState<boolean>(false);
-  const [timeFrame, setTimeFrame] = useState("all");
+  const [timeFrame, setTimeFrame] = useState(getTimeFrame("month"));
   const [page] = useState(1);
 
   const [sortConfig, setSortConfig] = useState({
@@ -69,7 +69,7 @@ export default function TransactionList({
 
   const fetchTransactions = useCallback(async () => {
     setIsFetching(true);
-    const res = await getTransactions(page, getTimeFrame(timeFrame as any));
+    const res = await getTransactions(page, timeFrame);
     setTransactions(res.transactions);
 
     setIsFetching(false);
