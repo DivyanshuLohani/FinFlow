@@ -15,7 +15,7 @@ export default function ClientLogout() {
   };
   return (
     <Button
-      className="flex items-center rounded "
+      className="flex items-center rounded w-full"
       variant="destructive"
       disabled={loading}
       onClick={handleLogout}

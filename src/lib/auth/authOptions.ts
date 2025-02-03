@@ -164,7 +164,13 @@ export const authOptions: NextAuthOptions = {
 
       return {
         ...token,
-        profile: { id: existingUser.id, isAdmin: existingUser.isAdmin },
+        profile: {
+          id: existingUser.id,
+          isAdmin: existingUser.isAdmin,
+          image: existingUser.image,
+          name: existingUser.name,
+          email: existingUser.email,
+        },
       };
     },
     async session({ session, token }) {

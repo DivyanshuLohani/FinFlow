@@ -9,9 +9,8 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import NavLinks from "./components/NavLinks";
-import ThemeSwitch from "@/components/ThemeSwitcher";
-import ClientLogout from "@/components/ClientLogout";
 import AppLogo from "@/components/AppLogo";
+import UserInfoBar from "./components/UserInfoBar";
 
 export const metadata: Metadata = {
   title: "Fin Flow",
@@ -34,8 +33,7 @@ export default function RootLayout({
             <NavLinks />
           </SidebarContent>
           <SidebarFooter className="p-4 space-y-4">
-            <ThemeSwitch />
-            <ClientLogout />
+            <UserInfoBar />
           </SidebarFooter>
         </Sidebar>
         <SidebarInset className="flex flex-col flex-grow overflow-auto">
