@@ -2,7 +2,11 @@ import "server-only";
 import { prisma } from "../database/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/authOptions";
-import { TTransaction } from "@/types/transaction";
+import {
+  TTransaction,
+  TTransactionUpdate,
+  ZTransactionUpdate,
+} from "@/types/transaction";
 import { validateInputs } from "../utils/validate";
 import { ZId } from "@/types/common";
 
@@ -178,6 +182,28 @@ export async function getTransactions(
     ]);
 
     return [transactions, count];
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function updateTransaction(id: string, data: TTransactionUpdate) {
+  validateInputs([data, ZTransactionUpdate]);
+
+  const session = await getServerSession(authOptions);
+  if (!session) throw new Error("Unauthorized");
+  try {
+    const updatedTransaction = await prisma.transaction.update({
+      where: {
+        id,
+        userId: session.user.id,
+      },
+      data: {
+        ...data,
+      },
+      include: { category: true },
+    });
+    return updatedTransaction;
   } catch (error) {
     throw error;
   }

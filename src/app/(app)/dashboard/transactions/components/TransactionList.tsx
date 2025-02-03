@@ -19,8 +19,13 @@ import TransactionFilter from "./TransactionFilter";
 import TransactionTimeframe from "./TransactionTimeframe";
 import ExportData from "./ExportData";
 import AddIncomeDialog from "../../components/AddIncomeDialog";
+import { type Category } from "@prisma/client";
 
-export default function TransactionList({ categories }: { categories: any }) {
+export default function TransactionList({
+  categories,
+}: {
+  categories: Category[];
+}) {
   const [transactions, setTransactions] = useState<TTransaction[]>([]);
   const [isFetching, setIsFetching] = useState(true);
   // const [hasMore, setHasMore] = useState<boolean>(false);
@@ -183,6 +188,7 @@ export default function TransactionList({ categories }: { categories: any }) {
                   key={transaction.id}
                   transaction={transaction}
                   setTransactions={setTransactions}
+                  categories={categories}
                 />
               ))}
             </TableBody>

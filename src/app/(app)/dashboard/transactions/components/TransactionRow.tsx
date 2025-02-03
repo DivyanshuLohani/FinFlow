@@ -1,25 +1,34 @@
+"use client";
 import { TableRow, TableCell } from "@/components/ui/table";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { TTransaction } from "@/types/transaction";
 
 import { ArrowUp, ArrowDown } from "lucide-react";
-import React from "react";
+import React, { useRef } from "react";
 import { TransactionDialog } from "./TransactionDialog";
+import { type Category } from "@prisma/client";
 
 interface TransactionRowProps {
   transaction: TTransaction;
   setTransactions: React.Dispatch<React.SetStateAction<TTransaction[]>>;
+  categories: Category[];
 }
 
 export default function TransactionRow({
   transaction,
   setTransactions,
+  categories,
 }: TransactionRowProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const dialogRef = useRef<{ openDialog: () => void; closeDialog: () => void }>(
+    null
+  );
   const isMobile = useIsMobile();
   return (
-    <TableRow key={transaction.id} onClick={() => setIsOpen(true)}>
+    <TableRow
+      key={transaction.id}
+      onClick={() => dialogRef.current?.openDialog()}
+    >
       <TableCell>{transaction.category.name}</TableCell>
       <TableCell className="text-right">
         {transaction.type === "INCOME" ? (
@@ -41,10 +50,10 @@ export default function TransactionRow({
       </TableCell>
       <TableCell className="text-right whitespace-nowrap hidden sm:block">
         <TransactionDialog
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
+          ref={dialogRef}
           transaction={transaction}
           setTransactions={setTransactions}
+          categories={categories}
         />
       </TableCell>
     </TableRow>

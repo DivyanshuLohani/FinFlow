@@ -18,8 +18,16 @@ export const ZTransaction = z.object({
   categoryId: z.string().cuid(),
   category: ZCategory,
 });
-
 export type TTransaction = z.infer<typeof ZTransaction>;
+
+export const ZTransactionUpdate = z.object({
+  amount: z.number(),
+  type: z.enum(["INCOME", "EXPENSE"]),
+  description: z.string().nullable().optional(),
+  date: z.date().optional(),
+  categoryId: z.string().cuid().optional(),
+});
+export type TTransactionUpdate = z.infer<typeof ZTransactionUpdate>;
 
 export type TCategory = Category & {
   transactions: number;
