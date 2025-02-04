@@ -8,23 +8,39 @@ import {
 } from "@/components/ui/card";
 import { TTransaction } from "@/types/transaction";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import { Button } from "@/components/ui/button";
 import ListTransaction from "./list-transaction";
 import { RecentTransactionsSkeleton } from "./RecentTransactionsSkeleton";
 
-export default function RecentTransactions() {
+const RecentTransactions = forwardRef(({}, ref) => {
   const [recentTransactions, setRecentTransactions] = useState<TTransaction[]>(
     []
   );
   const [isFetching, setIsFetching] = useState(true);
 
-  useEffect(() => {
-    setIsFetching(true);
+  useImperativeHandle(ref, () => ({
+    addTransaction: (transaction: TTransaction) => {
+      setRecentTransactions((prev) => [transaction, ...prev]);
+    },
+
+    refresh: fetchTransactions,
+  }));
+
+  const fetchTransactions = () =>
     fetch("/api/v1/transactions/recent")
       .then((res) => res.json())
       .then((data) => setRecentTransactions(data))
       .finally(() => setIsFetching(false));
+
+  useEffect(() => {
+    setIsFetching(true);
+    fetchTransactions();
   }, []);
 
   if (isFetching) return <RecentTransactionsSkeleton />;
@@ -59,4 +75,8 @@ export default function RecentTransactions() {
       )}
     </Card>
   );
-}
+});
+
+RecentTransactions.displayName = "RecentTransactions";
+
+export default RecentTransactions;

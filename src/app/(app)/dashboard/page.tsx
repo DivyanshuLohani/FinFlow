@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,19 +10,32 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import AddTransactionDialog from "./components/AddIncomeDialog";
-import { getCategories } from "@/lib/transaction/service";
 import RecentTransactions from "./components/RecentTransactions";
-import TransactionMetrics from "./components/TransactionMetrics";
+import TransactionMetrics, {
+  TransactionMatricsElement,
+} from "./components/TransactionMetrics";
+import { useCategories } from "@/hooks/use-category";
+import { useRef } from "react";
+import { TTransaction } from "@/types/transaction";
 
-export default async function DashboardPage() {
-  const categories = await getCategories();
+export default function DashboardPage() {
+  const { categories } = useCategories();
+  const transactionMatricsRef = useRef<TransactionMatricsElement>(null);
+  const recentTransactionsRef = useRef<{
+    addTransaction: (transaction: any) => void;
+  }>(null);
+
+  const onAdd = (transaction: TTransaction) => {
+    transactionMatricsRef.current?.addTransaction(transaction);
+    recentTransactionsRef.current?.addTransaction(transaction);
+  };
 
   return (
     <div className="space-y-6">
-      <TransactionMetrics />
+      <TransactionMetrics ref={transactionMatricsRef} />
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <RecentTransactions />
-        <Card className="col-span-3">
+        <RecentTransactions ref={recentTransactionsRef} />
+        <Card className="col-span-4 md:col-span-3">
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
             <CardDescription>
@@ -29,8 +43,16 @@ export default async function DashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4">
-            <AddTransactionDialog categories={categories} type="INCOME" />
-            <AddTransactionDialog categories={categories} type="EXPENSE" />
+            <AddTransactionDialog
+              categories={categories}
+              type="INCOME"
+              onAdd={onAdd}
+            />
+            <AddTransactionDialog
+              categories={categories}
+              type="EXPENSE"
+              onAdd={onAdd}
+            />
             <Button variant="outline" className="w-full">
               <Link
                 href="/dashboard/reports"

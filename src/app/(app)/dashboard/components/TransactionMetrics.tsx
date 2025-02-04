@@ -3,17 +3,50 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import { getTimeFrame } from "@/lib/utils/time";
 import { Banknote, TrendingUp, TrendingDown } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from "react";
 import TransactionTimeframe from "../transactions/components/TransactionTimeframe";
 import { TTimeFrame } from "@/types/common";
 import { getTotalExpenses, getTotalIncome } from "../actions";
 import SkeletonLoader from "./SkeletonLoaderT";
+import { TTransaction } from "@/types/transaction";
 
-export default function TransactionMetrics() {
+export interface TransactionMatricsElement {
+  refresh: () => void;
+  addTransaction: (transaction: TTransaction) => void;
+}
+
+const TransactionMatrics = forwardRef(({}, ref) => {
   const [timeFrame, setTimeFrame] = useState<TTimeFrame>(getTimeFrame("month"));
   const [totalExpense, setTotalExpense] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
   const [isFetching, setIsFetching] = useState(true);
+
+  useImperativeHandle(ref, () => ({
+    refresh: () => {
+      gTIS();
+    },
+    addTransaction: (transaction: TTransaction) => {
+      if (transaction.type === "INCOME") {
+        setTotalIncome((prev) => prev + transaction.amount);
+      } else {
+        setTotalExpense((prev) => prev + transaction.amount);
+      }
+    },
+  }));
+
+  const gTIS = async () => {
+    const income = await getTotalIncome(timeFrame);
+    const expenses = await getTotalExpenses(timeFrame);
+    setTotalIncome(income);
+    setTotalExpense(expenses);
+    setIsFetching(false);
+  };
 
   const totalBalance = useMemo(() => {
     return totalIncome - totalExpense;
@@ -21,16 +54,9 @@ export default function TransactionMetrics() {
 
   useEffect(() => {
     setIsFetching(true);
-
-    const gTIS = async () => {
-      const income = await getTotalIncome(timeFrame);
-      const expenses = await getTotalExpenses(timeFrame);
-      setTotalIncome(income);
-      setTotalExpense(expenses);
-      setIsFetching(false);
-    };
-
     gTIS();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeFrame]);
   if (isFetching) {
     return <SkeletonLoader />;
@@ -86,4 +112,8 @@ export default function TransactionMetrics() {
       </div>
     </div>
   );
-}
+});
+
+TransactionMatrics.displayName = "TransactionMatrics";
+
+export default TransactionMatrics;

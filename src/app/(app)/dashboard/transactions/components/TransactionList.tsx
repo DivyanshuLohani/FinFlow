@@ -202,7 +202,13 @@ export default function TransactionList({
         </div>
       )}
       <div className="fixed right-8 bottom-8">
-        <AddIncomeDialog categories={categories} compact />
+        <AddIncomeDialog
+          categories={categories}
+          compact
+          onAdd={(transaction: TTransaction) => {
+            setTransactions((prev) => [transaction, ...prev]);
+          }}
+        />
       </div>
     </div>
   );

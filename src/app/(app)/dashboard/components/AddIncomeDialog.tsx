@@ -14,23 +14,27 @@ import { TransactionType, type Category } from "@prisma/client";
 import TransactionForm from "@/app/components/TransactionForm";
 import { createTransaction } from "@/lib/transaction";
 import { toast } from "react-toastify";
+import { TTransaction } from "@/types/transaction";
 
 interface AddTransactionDialogProps {
   categories: Category[];
   type?: TransactionType;
   compact?: boolean;
+  onAdd?: (transaction: TTransaction) => void;
 }
 
 export default function AddIncomeDialog({
   categories,
   type,
   compact,
+  onAdd,
 }: AddTransactionDialogProps) {
   const [open, setOpen] = useState(false);
 
   const handleSubmit = async (values: any) => {
     try {
-      await createTransaction({ ...values });
+      const transaction = await createTransaction({ ...values });
+      if (onAdd) onAdd(transaction);
       toast.success("Transaction added successfully");
     } catch {
       toast.error("Something went wrong");

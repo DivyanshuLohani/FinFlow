@@ -11,17 +11,22 @@ import {
 import NavLinks from "./components/NavLinks";
 import AppLogo from "@/components/AppLogo";
 import UserInfoBar from "./components/UserInfoBar";
+import { CategoryProvider } from "@/providers/category-provider";
+import { getCategories } from "@/lib/transaction/service";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Fin Flow",
   description: "Track your expenses and income",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const categories = await getCategories();
+
   return (
     <SidebarProvider>
       <div className="flex h-screen w-full">
@@ -43,7 +48,11 @@ export default function RootLayout({
               <SidebarTrigger />
             </div>
           </header>
-          <main className="flex-grow p-6">{children}</main>
+          <Suspense fallback={<div>Loading...</div>}>
+            <CategoryProvider categories={categories}>
+              <main className="flex-grow p-6">{children}</main>
+            </CategoryProvider>
+          </Suspense>
         </SidebarInset>
       </div>
     </SidebarProvider>

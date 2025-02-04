@@ -16,6 +16,7 @@ export async function createTransaction(data: any) {
       data: {
         ...data,
       },
+      include: { category: true },
     });
     return newTransaction;
   } catch (error) {
