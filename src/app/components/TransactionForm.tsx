@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Category, TransactionType } from "@prisma/client";
+import { TransactionType } from "@prisma/client";
 import {
   Popover,
   PopoverTrigger,
@@ -33,6 +33,7 @@ import { z } from "zod";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { TTransaction } from "@/types/transaction";
+import { useCategories } from "@/hooks/use-category";
 
 const formSchema = z.object({
   amount: z
@@ -62,7 +63,6 @@ const formSchema = z.object({
 });
 
 interface TransactionFormProps {
-  categories: Category[];
   type?: TransactionType;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
   transaction?: Partial<TTransaction>;
@@ -71,12 +71,12 @@ interface TransactionFormProps {
 
 export default function TransactionForm({
   type,
-  categories,
   onSubmit: onSub,
   transaction,
   editing,
 }: TransactionFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { categories } = useCategories();
   if (typeof editing === "undefined") editing = false;
 
   const form = useForm<z.infer<typeof formSchema>>({

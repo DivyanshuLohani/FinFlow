@@ -14,12 +14,10 @@ import RecentTransactions from "./components/RecentTransactions";
 import TransactionMetrics, {
   TransactionMatricsElement,
 } from "./components/TransactionMetrics";
-import { useCategories } from "@/hooks/use-category";
 import { useRef } from "react";
 import { TTransaction } from "@/types/transaction";
 
 export default function DashboardPage() {
-  const { categories } = useCategories();
   const transactionMatricsRef = useRef<TransactionMatricsElement>(null);
   const recentTransactionsRef = useRef<{
     addTransaction: (transaction: any) => void;
@@ -43,16 +41,8 @@ export default function DashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4">
-            <AddTransactionDialog
-              categories={categories}
-              type="INCOME"
-              onAdd={onAdd}
-            />
-            <AddTransactionDialog
-              categories={categories}
-              type="EXPENSE"
-              onAdd={onAdd}
-            />
+            <AddTransactionDialog type="INCOME" onAdd={onAdd} />
+            <AddTransactionDialog type="EXPENSE" onAdd={onAdd} />
             <Button variant="outline" className="w-full">
               <Link
                 href="/dashboard/reports"

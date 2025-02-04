@@ -7,6 +7,7 @@ import { AddCategoryModal } from "./components/AddCategoryDialog";
 import CategoryCard from "./components/CategoryCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TCategory } from "@/types/transaction";
+import { useCategories } from "@/hooks/use-category";
 
 function CategoryCardSkeleton() {
   return (
@@ -24,6 +25,7 @@ function CategoryCardSkeleton() {
 
 export default function CategoriesPage() {
   const [isFetching, setIsFetching] = useState(true);
+  const { addCategory, removeCategory } = useCategories();
   const [categories, setCategories] = useState<TCategory[]>([]);
   const [search, setSearch] = useState<string>("");
 
@@ -68,9 +70,10 @@ export default function CategoriesPage() {
           className="mr-2"
         />
         <AddCategoryModal
-          onAddCategory={(category) =>
-            setCategories((prev) => [...prev, category])
-          }
+          onAddCategory={(category) => {
+            setCategories((prev) => [...prev, category]);
+            addCategory(category);
+          }}
         />
       </div>
 
@@ -85,7 +88,10 @@ export default function CategoriesPage() {
             key={category.id}
             category={category}
             onDelete={(c) => {
-              setCategories((prev) => prev.filter((cat) => cat.id !== c.id));
+              {
+                setCategories((prev) => prev.filter((cat) => cat.id !== c.id));
+                removeCategory(c.id);
+              }
             }}
           />
         ))}

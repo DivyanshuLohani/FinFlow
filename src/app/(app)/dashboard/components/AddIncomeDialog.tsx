@@ -10,21 +10,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { TransactionType, type Category } from "@prisma/client";
+import { TransactionType } from "@prisma/client";
 import TransactionForm from "@/app/components/TransactionForm";
 import { createTransaction } from "@/lib/transaction";
 import { toast } from "react-toastify";
 import { TTransaction } from "@/types/transaction";
 
 interface AddTransactionDialogProps {
-  categories: Category[];
   type?: TransactionType;
   compact?: boolean;
   onAdd?: (transaction: TTransaction) => void;
 }
 
 export default function AddIncomeDialog({
-  categories,
   type,
   compact,
   onAdd,
@@ -67,7 +65,6 @@ export default function AddIncomeDialog({
         </DialogTitle>
 
         <TransactionForm
-          categories={categories}
           type={type}
           onSubmit={(values) => {
             handleSubmit(values);

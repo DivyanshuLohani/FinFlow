@@ -7,18 +7,15 @@ import { TTransaction } from "@/types/transaction";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import React, { useRef } from "react";
 import { TransactionDialog } from "./TransactionDialog";
-import { type Category } from "@prisma/client";
 
 interface TransactionRowProps {
   transaction: TTransaction;
   setTransactions: React.Dispatch<React.SetStateAction<TTransaction[]>>;
-  categories: Category[];
 }
 
 export default function TransactionRow({
   transaction,
   setTransactions,
-  categories,
 }: TransactionRowProps) {
   const dialogRef = useRef<{ openDialog: () => void; closeDialog: () => void }>(
     null
@@ -53,7 +50,6 @@ export default function TransactionRow({
           ref={dialogRef}
           transaction={transaction}
           setTransactions={setTransactions}
-          categories={categories}
         />
       </TableCell>
     </TableRow>

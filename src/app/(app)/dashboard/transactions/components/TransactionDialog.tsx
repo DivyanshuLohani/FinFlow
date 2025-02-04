@@ -29,19 +29,14 @@ import { formatCurrency } from "@/lib/utils";
 import { deleteTransaction, updateTransaction } from "@/lib/transaction";
 import { toast } from "react-toastify";
 import TransactionForm from "@/app/components/TransactionForm";
-import { type Category } from "@prisma/client";
 
 interface TransactionDialogProps {
   transaction: TTransaction;
   setTransactions: React.Dispatch<React.SetStateAction<TTransaction[]>>;
-  categories: Category[];
 }
 
 export const TransactionDialog = forwardRef(
-  (
-    { transaction, setTransactions, categories }: TransactionDialogProps,
-    ref
-  ) => {
+  ({ transaction, setTransactions }: TransactionDialogProps, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [editing, setEditing] = useState(false);
@@ -172,7 +167,6 @@ export const TransactionDialog = forwardRef(
               transaction={transaction}
               onSubmit={handleUpdate}
               editing
-              categories={categories}
               type={transaction.type}
             />
           )}
