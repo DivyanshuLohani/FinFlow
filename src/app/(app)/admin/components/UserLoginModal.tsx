@@ -14,14 +14,17 @@ import {
 import { toast } from "react-toastify";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { loginAsUser } from "../actions";
 
 interface UserLoginModalProps {
-  token: string;
+  userId: string;
+  email: string;
   userName: string;
 }
 
 export default function UserLoginModal({
-  token,
+  userId,
+  email,
   userName,
 }: UserLoginModalProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,6 +35,7 @@ export default function UserLoginModal({
     setIsLoading(true);
     try {
       // This should be replaced with an actual API call to log in as the user
+      const token = await loginAsUser(userId, email);
       const success = await signIn("token", {
         token: token,
         redirect: false,

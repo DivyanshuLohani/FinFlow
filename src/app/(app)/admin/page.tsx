@@ -103,8 +103,9 @@ async function UserList() {
                 <TableCell>{user.email}</TableCell>
                 <TableCell>
                   <UserLoginModal
-                    token={user.token}
                     userName={user.name ?? ""}
+                    userId={user.id}
+                    email={user.email ?? ""}
                   />
                 </TableCell>
               </TableRow>

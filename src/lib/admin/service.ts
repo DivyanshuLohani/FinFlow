@@ -2,7 +2,6 @@ import { getServerSession } from "next-auth";
 import "server-only";
 import { prisma } from "../database/prisma";
 import { authOptions } from "../auth/authOptions";
-import { createToken } from "../jwt";
 
 export async function getAdminData() {
   const session = await getServerSession(authOptions);
@@ -48,11 +47,6 @@ export async function getUsers() {
   // For every user generate a token and add it to the list
 
   const users = await prisma.user.findMany();
-  const usersWithTokens = await Promise.all(
-    users.map(async (user) => {
-      const token = createToken(user.id, user.email);
-      return { ...user, token };
-    })
-  );
-  return usersWithTokens;
+
+  return users;
 }
