@@ -209,3 +209,88 @@ export async function updateTransaction(id: string, data: TTransactionUpdate) {
     throw error;
   }
 }
+
+export async function updateRecurringTransactions() {
+  const recurringTransactions = await prisma.transaction.findMany({
+    where: {
+      recurring: true,
+      nextDate: {
+        lte: new Date(),
+      },
+    },
+    include: { category: true },
+  });
+
+  for (const transaction of recurringTransactions) {
+    const newDate = new Date(transaction.nextDate ?? transaction.date);
+    let nextDate: Date;
+    let lastDayOfMonth, day;
+    switch (transaction.recurringType) {
+      case "DAILY":
+        // handle for last day of the month
+        lastDayOfMonth = new Date(
+          newDate.getFullYear(),
+          newDate.getMonth() + 1,
+          0
+        ).getDate();
+        day = newDate.getDate();
+        if (day === lastDayOfMonth) {
+          nextDate = new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0);
+        } else {
+          nextDate = new Date(newDate.setDate(newDate.getDate() + 1));
+        }
+        break;
+      case "WEEKLY":
+        // handle for last dates of the month
+        lastDayOfMonth = new Date(
+          newDate.getFullYear(),
+          newDate.getMonth() + 1,
+          0
+        ).getDate();
+        day = newDate.getDate();
+        const diff = 7 - (day % 7);
+        const newDay = day + diff;
+        if (newDay > lastDayOfMonth) {
+          nextDate = new Date(
+            newDate.getFullYear(),
+            newDate.getMonth() + 1,
+            newDay - lastDayOfMonth
+          );
+        } else {
+          nextDate = new Date(newDate.setDate(newDate.getDate() + diff));
+        }
+        break;
+      case "MONTHLY":
+        // handle for last month of the year
+        nextDate = new Date(newDate.setMonth(newDate.getMonth() + 1));
+        if (nextDate.getMonth() === 0) {
+          nextDate.setFullYear(nextDate.getFullYear() + 1);
+        }
+        break;
+      case "YEARLY":
+        nextDate = new Date(newDate.setFullYear(newDate.getFullYear() + 1));
+        break;
+      default:
+        nextDate = new Date();
+    }
+    await prisma.transaction.create({
+      data: {
+        amount: transaction.amount,
+        type: transaction.type,
+        description: transaction.description,
+        date: nextDate,
+        userId: transaction.userId,
+        categoryId: transaction.categoryId,
+        recurring: false,
+      },
+    });
+    await prisma.transaction.update({
+      where: {
+        id: transaction.id,
+      },
+      data: {
+        nextDate: nextDate,
+      },
+    });
+  }
+}

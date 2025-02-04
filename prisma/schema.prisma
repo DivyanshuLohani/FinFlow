@@ -62,6 +62,11 @@ model Transaction {
   type        TransactionType
   description String?
   date        DateTime        @default(now())
+
+  recurring   Boolean @default(false)
+  nextDate    DateTime?
+  recurringType RecurringType?
+
   userId      String
   categoryId  String
 
@@ -98,6 +103,13 @@ model Budget {
 enum TransactionType {
   INCOME
   EXPENSE
+}
+
+enum RecurringType {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
 }
 
 enum CategoryType {

@@ -17,6 +17,13 @@ export const ZTransaction = z.object({
   userId: z.string().cuid(),
   categoryId: z.string().cuid(),
   category: ZCategory,
+
+  recurring: z.boolean().optional().default(false),
+  nextDate: z.date().optional().nullable(),
+  recurringType: z
+    .enum(["DAILY", "WEEKLY", "MONTHLY", "YEARLY"])
+    .optional()
+    .nullable(),
 });
 export type TTransaction = z.infer<typeof ZTransaction>;
 

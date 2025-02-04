@@ -34,6 +34,8 @@ import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { TTransaction } from "@/types/transaction";
 import { useCategories } from "@/hooks/use-category";
+import { Switch } from "@/components/ui/switch";
+import { AnimatePresence } from "framer-motion";
 
 const formSchema = z.object({
   amount: z
@@ -54,12 +56,17 @@ const formSchema = z.object({
       },
       { message: "Amount must be a valid mathematical expression" }
     ),
-  categoryId: z.string().min(1, "Category is required"),
+  categoryId: z.string().cuid().min(1, "Category is required"),
   date: z.date({
     required_error: "Date is required",
   }),
   description: z.string().optional(),
   type: z.nativeEnum(TransactionType),
+  recurring: z.boolean().optional().default(false),
+  recurringType: z
+    .enum(["DAILY", "WEEKLY", "MONTHLY", "YEARLY"])
+    .optional()
+    .nullable(),
 });
 
 interface TransactionFormProps {
@@ -100,6 +107,8 @@ export default function TransactionForm({
       setIsSubmitting(false);
     }
   }
+
+  const watchRecurring = form.watch("recurring");
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -258,6 +267,62 @@ export default function TransactionForm({
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="recurring"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">
+                  Recurring Transaction
+                </FormLabel>
+                <FormDescription>
+                  Enable if this is a recurring transaction
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <AnimatePresence>
+          {watchRecurring && (
+            <FormField
+              control={form.control}
+              name="recurringType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Recurring Frequency</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value || undefined}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select frequency" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="DAILY">Daily</SelectItem>
+                      <SelectItem value="WEEKLY">Weekly</SelectItem>
+                      <SelectItem value="MONTHLY">Monthly</SelectItem>
+                      <SelectItem value="YEARLY">Yearly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    How often should this transaction repeat?
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+        </AnimatePresence>
         <Button type="submit" disabled={isSubmitting}>
           {editing ? "Update" : "Add"}
         </Button>

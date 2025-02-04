@@ -37,7 +37,6 @@ const ImageFeature = ({ image, title, description }: FeatureProps) => {
         <Image
           src={image || "/placeholder.svg"}
           alt={title}
-          layout="fill"
           objectFit="cover"
           className="transition-transform duration-300 ease-in-out group-hover:scale-110"
         />
