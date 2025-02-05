@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -54,9 +54,6 @@ export default function TransactionTimeframe({
     setCustomRange({ startDate: d.startDate, endDate: d.endDate });
     return "custom";
   });
-  useEffect(() => {
-    console.log(displayTimeFrame);
-  }, [displayTimeFrame]);
 
   const handleTimeFrameChange = (value: string) => {
     setDisplayTimeFrame(value as SupportedFrames);

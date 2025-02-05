@@ -1,20 +1,44 @@
+"use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import IncomeVsExpense from "./components/IncomeVsExpense";
-import {
-  getCategoryData,
-  getMonthlyExpenseVsIncome,
-} from "@/lib/transaction/reports";
-import { getTotalExpenses, getTotalIncome } from "@/lib/user/analytics";
-import { getTimeFrame } from "@/lib/utils/time";
+
 import { formatCurrency } from "@/lib/utils";
 import TransactionTypeTab from "./components/IncomeTab";
+import { useEffect, useState } from "react";
+import { getReportData } from "./actions";
+import { getTimeFrame } from "@/lib/utils/time";
+import AnalyticsDashboardSkeleton from "./components/Skeleton";
 
-export default async function ReportsPage() {
-  const incomeVsExenseData = await getMonthlyExpenseVsIncome();
-  const categoryData = await getCategoryData(getTimeFrame("month"));
-  const totalIncome = await getTotalIncome(getTimeFrame("month"));
-  const totalExpense = await getTotalExpenses(getTimeFrame("month"));
+type ReportData = {
+  incomeVsExenseData: { name: string; expenses: number; income: number }[];
+  categoryData: { name: string; expenses: number; income: number }[];
+  totalIncome: number;
+  totalExpense: number;
+};
+
+export default function ReportsPage() {
+  const [reportData, setReportData] = useState<ReportData | null>(null);
+  const [fetching, setFetching] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      setFetching(true);
+      const data = await getReportData(getTimeFrame("month"));
+
+      setReportData(data);
+      setFetching(false);
+    }
+    fetchData();
+  }, []);
+
+  if (!reportData && fetching) return <AnalyticsDashboardSkeleton />;
+
+  if (!fetching && !reportData) return <div>No data available</div>;
+
+  const { incomeVsExenseData, categoryData, totalIncome, totalExpense } =
+    reportData!;
+
   const netSavings = totalIncome - totalExpense;
   const savingsRate = (netSavings / totalIncome) * 100;
 
@@ -89,17 +113,17 @@ export default async function ReportsPage() {
         <TabsContent value="expenses" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Expense Categories</CardTitle>
-              <CardDescription>
-                Breakdown of expenses by category
+            <CardTitle>Expense Categories</CardTitle>
+            <CardDescription>
+            Breakdown of expenses by category
               </CardDescription>
             </CardHeader>
             <CardContent className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={categoryData}
-                    cx="50%"
+                  data={categoryData}
+                  cx="50%"
                     cy="50%"
                     labelLine={false}
                     outerRadius={80}
