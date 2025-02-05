@@ -37,7 +37,7 @@ const ImageFeature = ({ image, title, description }: FeatureProps) => {
         <Image
           src={image || "/placeholder.svg"}
           alt={title}
-          objectFit="cover"
+          fill
           className="transition-transform duration-300 ease-in-out group-hover:scale-110"
         />
         {/* Gradient Overlay - Always visible on mobile */}

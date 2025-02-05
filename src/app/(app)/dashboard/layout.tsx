@@ -14,6 +14,7 @@ import UserInfoBar from "./components/UserInfoBar";
 import { CategoryProvider } from "@/providers/category-provider";
 import { getCategories } from "@/lib/transaction/service";
 import { Suspense } from "react";
+import DasboardSkeleton from "./components/DasboardSkeleton";
 
 export const metadata: Metadata = {
   title: "Fin Flow",
@@ -48,7 +49,7 @@ export default async function RootLayout({
               <SidebarTrigger />
             </div>
           </header>
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<DasboardSkeleton />}>
             <CategoryProvider categories={categories}>
               <main className="flex-grow p-6">{children}</main>
             </CategoryProvider>
