@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -69,10 +70,17 @@ export default function AddTransactionSheet({
           <SheetTitle className="text-xl font-semibold">
             Add {type === TransactionType.INCOME ? "Income" : "Expense"}
           </SheetTitle>
+          <SheetDescription className="sr-only">
+            Add Income Dialog
+          </SheetDescription>
         </SheetHeader>
         <div className="mt-4">
           <TransactionForm
-            initialValues={{ type: type, recurring: false, amount: "" }}
+            initialValues={{
+              type: type,
+              recurring: false,
+              amount: "",
+            }}
             onSubmit={(values) => {
               handleSubmit(values);
             }}

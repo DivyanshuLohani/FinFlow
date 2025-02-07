@@ -69,16 +69,6 @@ const formSchema = z.object({
 });
 type TransactionFormValues = z.infer<typeof formSchema>;
 
-const defaultValues = {
-  type: TransactionType.INCOME,
-  recurring: false,
-  recurringType: null,
-  amount: "",
-  categoryId: "",
-  date: new Date(),
-  description: "",
-};
-
 interface TransactionFormProps {
   initialValues?: Partial<TransactionFormValues>;
   onSubmit: (values: TransactionFormValues) => void;
@@ -90,14 +80,28 @@ export default function TransactionForm({
   onSubmit,
   editing = false,
 }: TransactionFormProps) {
+  const defaultValues = {
+    type: TransactionType.INCOME,
+    recurring: false,
+    recurringType: null,
+    amount: "",
+    categoryId: "",
+    date: new Date(Date.now()),
+    description: "",
+  };
+  console.log(initialValues);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { categories } = useCategories();
   if (typeof editing === "undefined") editing = false;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialValues || defaultValues,
+    defaultValues: initialValues
+      ? { ...defaultValues, ...initialValues }
+      : defaultValues,
   });
+  console.log(form.getValues());
 
   async function onBeforeSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
