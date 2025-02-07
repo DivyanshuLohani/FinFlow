@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Inter } from "next/font/google";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { Repeat, Wallet, Globe, Smartphone } from "lucide-react";
+import { Wallet, Globe, Smartphone } from "lucide-react";
 import type React from "react";
 import FinancialShape from "./FinancialShape";
 import { useState } from "react";
@@ -98,14 +98,14 @@ const currentFeatures: FeatureProps[] = [
     title: "Data Export",
     description: "Export your transaction data for external use.",
   },
+  {
+    image: "/landing/images/recurring.png",
+    title: "Recurring Transactions",
+    description: "Manage recurring transactions with ease.",
+  },
 ];
 
 const upcomingFeatures: FeatureProps[] = [
-  {
-    icon: <Repeat size={32} />,
-    title: "Recurring Transactions",
-    description: "Automate frequent expenses or income.",
-  },
   {
     icon: <Wallet size={32} />,
     title: "Budget Management",
