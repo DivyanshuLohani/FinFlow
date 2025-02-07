@@ -89,7 +89,6 @@ export default function TransactionForm({
     date: new Date(Date.now()),
     description: "",
   };
-  console.log(initialValues);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { categories } = useCategories();
@@ -101,7 +100,6 @@ export default function TransactionForm({
       ? { ...defaultValues, ...initialValues }
       : defaultValues,
   });
-  console.log(form.getValues());
 
   async function onBeforeSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
