@@ -32,7 +32,6 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
-import { TTransaction } from "@/types/transaction";
 import { useCategories } from "@/hooks/use-category";
 import { Switch } from "@/components/ui/switch";
 import { AnimatePresence } from "framer-motion";
@@ -68,19 +67,28 @@ const formSchema = z.object({
     .optional()
     .nullable(),
 });
+type TransactionFormValues = z.infer<typeof formSchema>;
+
+const defaultValues = {
+  type: TransactionType.INCOME,
+  recurring: false,
+  recurringType: null,
+  amount: "",
+  categoryId: "",
+  date: new Date(),
+  description: "",
+};
 
 interface TransactionFormProps {
-  type?: TransactionType;
-  onSubmit: (values: z.infer<typeof formSchema>) => void;
-  transaction?: Partial<TTransaction>;
+  initialValues?: Partial<TransactionFormValues>;
+  onSubmit: (values: TransactionFormValues) => void;
   editing?: boolean;
 }
 
 export default function TransactionForm({
-  type,
-  onSubmit: onSub,
-  transaction,
-  editing,
+  initialValues,
+  onSubmit,
+  editing = false,
 }: TransactionFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { categories } = useCategories();
@@ -88,19 +96,13 @@ export default function TransactionForm({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      amount: transaction?.amount?.toString() || "",
-      categoryId: transaction?.categoryId || "",
-      date: new Date(transaction?.date || Date.now()),
-      description: transaction?.description || "",
-      type: transaction?.type || type || TransactionType.INCOME,
-    },
+    defaultValues: initialValues || defaultValues,
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onBeforeSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-      onSub(values);
+      onSubmit(values);
     } catch {
       toast.error("Something went wrong");
     } finally {
@@ -109,10 +111,12 @@ export default function TransactionForm({
   }
 
   const watchRecurring = form.watch("recurring");
+  const type = form.watch("type");
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {!type && (
+      <form onSubmit={form.handleSubmit(onBeforeSubmit)} className="space-y-8">
+        {!initialValues?.type && (
           <FormField
             control={form.control}
             name="type"
@@ -323,7 +327,7 @@ export default function TransactionForm({
             />
           )}
         </AnimatePresence>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting} className="w-full">
           {editing ? "Update" : "Add"}
         </Button>
       </form>

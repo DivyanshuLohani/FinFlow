@@ -1,11 +1,11 @@
-import React from "react";
-import { TransactionType, type Transaction } from "@prisma/client";
+import { TransactionType } from "@prisma/client";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 import clsx from "clsx";
+import { TTransaction } from "@/types/transaction";
 
 interface ListTransactionProps {
-  transaction: Transaction & {
+  transaction: TTransaction & {
     category: {
       name: string;
     };

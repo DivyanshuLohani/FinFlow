@@ -5,16 +5,80 @@ import { authOptions } from "../auth/authOptions";
 import {
   TTransaction,
   TTransactionUpdate,
+  ZTransactionCreate,
   ZTransactionUpdate,
 } from "@/types/transaction";
 import { validateInputs } from "../utils/validate";
 import { ZId } from "@/types/common";
+import { RecurringType } from "@prisma/client";
+
+function getNextDate(date: Date, recurringType: RecurringType) {
+  const newDate = new Date(date);
+  let nextDate: Date;
+  let lastDayOfMonth, day;
+  switch (recurringType) {
+    case "DAILY":
+      // handle for last day of the month
+      lastDayOfMonth = new Date(
+        newDate.getFullYear(),
+        newDate.getMonth() + 1,
+        0
+      ).getDate();
+      day = newDate.getDate();
+      if (day === lastDayOfMonth) {
+        nextDate = new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0);
+      } else {
+        nextDate = new Date(newDate.setDate(newDate.getDate() + 1));
+      }
+      break;
+    case "WEEKLY":
+      // handle for last dates of the month
+      lastDayOfMonth = new Date(
+        newDate.getFullYear(),
+        newDate.getMonth() + 1,
+        0
+      ).getDate();
+      day = newDate.getDate();
+      const diff = 7 - (day % 7);
+      const newDay = day + diff;
+      if (newDay > lastDayOfMonth) {
+        nextDate = new Date(
+          newDate.getFullYear(),
+          newDate.getMonth() + 1,
+          newDay - lastDayOfMonth
+        );
+      } else {
+        nextDate = new Date(newDate.setDate(newDate.getDate() + diff));
+      }
+      break;
+    case "MONTHLY":
+      // handle for last month of the year
+      nextDate = new Date(newDate.setMonth(newDate.getMonth() + 1));
+      if (nextDate.getMonth() === 0) {
+        nextDate.setFullYear(nextDate.getFullYear() + 1);
+      }
+      break;
+    case "YEARLY":
+      nextDate = new Date(newDate.setFullYear(newDate.getFullYear() + 1));
+      break;
+    default:
+      nextDate = new Date();
+  }
+  return nextDate;
+}
 
 export async function createTransaction(data: any) {
+  validateInputs([data, ZTransactionCreate]);
   try {
+    const d = { ...data };
+    if (data.recurring) {
+      d.nextDate = getNextDate(new Date(), data.recurringType!);
+    }
     const newTransaction = await prisma.transaction.create({
       data: {
-        ...data,
+        ...d,
+        // Make sure only recurring transactions have the recurringType
+        recurringType: data.recurring ? data.recurringType : null,
       },
       include: { category: true },
     });
@@ -218,70 +282,21 @@ export async function updateRecurringTransactions() {
         lte: new Date(),
       },
     },
-    include: { category: true },
   });
 
   for (const transaction of recurringTransactions) {
     const newDate = new Date(transaction.nextDate ?? transaction.date);
-    let nextDate: Date;
-    let lastDayOfMonth, day;
-    switch (transaction.recurringType) {
-      case "DAILY":
-        // handle for last day of the month
-        lastDayOfMonth = new Date(
-          newDate.getFullYear(),
-          newDate.getMonth() + 1,
-          0
-        ).getDate();
-        day = newDate.getDate();
-        if (day === lastDayOfMonth) {
-          nextDate = new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0);
-        } else {
-          nextDate = new Date(newDate.setDate(newDate.getDate() + 1));
-        }
-        break;
-      case "WEEKLY":
-        // handle for last dates of the month
-        lastDayOfMonth = new Date(
-          newDate.getFullYear(),
-          newDate.getMonth() + 1,
-          0
-        ).getDate();
-        day = newDate.getDate();
-        const diff = 7 - (day % 7);
-        const newDay = day + diff;
-        if (newDay > lastDayOfMonth) {
-          nextDate = new Date(
-            newDate.getFullYear(),
-            newDate.getMonth() + 1,
-            newDay - lastDayOfMonth
-          );
-        } else {
-          nextDate = new Date(newDate.setDate(newDate.getDate() + diff));
-        }
-        break;
-      case "MONTHLY":
-        // handle for last month of the year
-        nextDate = new Date(newDate.setMonth(newDate.getMonth() + 1));
-        if (nextDate.getMonth() === 0) {
-          nextDate.setFullYear(nextDate.getFullYear() + 1);
-        }
-        break;
-      case "YEARLY":
-        nextDate = new Date(newDate.setFullYear(newDate.getFullYear() + 1));
-        break;
-      default:
-        nextDate = new Date();
-    }
+    const nextDate = getNextDate(newDate, transaction.recurringType!);
     await prisma.transaction.create({
       data: {
         amount: transaction.amount,
         type: transaction.type,
         description: transaction.description,
-        date: nextDate,
+        date: newDate,
         userId: transaction.userId,
         categoryId: transaction.categoryId,
         recurring: false,
+        isAddedByRecurring: true,
       },
     });
     await prisma.transaction.update({

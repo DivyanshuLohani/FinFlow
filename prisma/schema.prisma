@@ -64,6 +64,7 @@ model Transaction {
   date        DateTime        @default(now())
 
   recurring   Boolean @default(false)
+  isAddedByRecurring Boolean @default(false)
   nextDate    DateTime?
   recurringType RecurringType?
 

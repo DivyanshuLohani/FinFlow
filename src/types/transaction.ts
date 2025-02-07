@@ -19,6 +19,7 @@ export const ZTransaction = z.object({
   category: ZCategory,
 
   recurring: z.boolean().optional().default(false),
+  isAddedByRecurring: z.boolean().optional().default(false),
   nextDate: z.date().optional().nullable(),
   recurringType: z
     .enum(["DAILY", "WEEKLY", "MONTHLY", "YEARLY"])
@@ -26,6 +27,24 @@ export const ZTransaction = z.object({
     .nullable(),
 });
 export type TTransaction = z.infer<typeof ZTransaction>;
+
+export const ZTransactionCreate = z.object({
+  amount: z.number({
+    required_error: "Amount is required",
+  }),
+  type: z.enum(["INCOME", "EXPENSE"], {
+    required_error: "Type is required",
+  }),
+  description: z.string().nullable().optional(),
+  date: z.string().pipe(z.coerce.date()),
+  categoryId: z.string().cuid(),
+  recurring: z.boolean().optional().default(false),
+  recurringType: z
+    .enum(["DAILY", "WEEKLY", "MONTHLY", "YEARLY"])
+    .optional()
+    .nullable(),
+});
+export type TTransactionCreate = z.infer<typeof ZTransactionCreate>;
 
 export const ZTransactionUpdate = z.object({
   amount: z.number(),

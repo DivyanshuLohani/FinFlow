@@ -2,31 +2,32 @@
 
 import { useState } from "react";
 import { ArrowDownIcon, ArrowUpIcon, PlusIcon } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { TransactionType } from "@prisma/client";
 import TransactionForm from "@/app/components/TransactionForm";
 import { createTransaction } from "@/lib/transaction";
 import { toast } from "react-toastify";
 import { TTransaction } from "@/types/transaction";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-interface AddTransactionDialogProps {
+interface AddTransactionSheetProps {
   type?: TransactionType;
   compact?: boolean;
   onAdd?: (transaction: TTransaction) => void;
 }
 
-export default function AddIncomeDialog({
+export default function AddTransactionSheet({
   type,
   compact,
   onAdd,
-}: AddTransactionDialogProps) {
+}: AddTransactionSheetProps) {
   const [open, setOpen] = useState(false);
 
   const handleSubmit = async (values: any) => {
@@ -41,12 +42,13 @@ export default function AddIncomeDialog({
     }
   };
 
+  const isMobile = useIsMobile();
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
         {compact ? (
-          <Button className="w-16 h-16 rounded-full">
-            <PlusIcon height={50} width={50} className="w-full h-full" />
+          <Button className="w-16 h-16 rounded-full fixed bottom-4 right-4 z-10 shadow-lg">
+            <PlusIcon className="w-8 h-8" />
           </Button>
         ) : (
           <Button className="w-full">
@@ -58,19 +60,25 @@ export default function AddIncomeDialog({
             Add {type === TransactionType.INCOME ? "Income" : "Expense"}
           </Button>
         )}
-      </DialogTrigger>
-      <DialogContent className={"overflow-y-scroll max-h-screen"}>
-        <DialogTitle>
-          Add {type === TransactionType.INCOME ? "Income" : "Expense"}
-        </DialogTitle>
-
-        <TransactionForm
-          type={type}
-          onSubmit={(values) => {
-            handleSubmit(values);
-          }}
-        />
-      </DialogContent>
-    </Dialog>
+      </SheetTrigger>
+      <SheetContent
+        side={isMobile ? "bottom" : "right"}
+        className="h-[90vh] sm:h-full overflow-y-auto"
+      >
+        <SheetHeader>
+          <SheetTitle className="text-xl font-semibold">
+            Add {type === TransactionType.INCOME ? "Income" : "Expense"}
+          </SheetTitle>
+        </SheetHeader>
+        <div className="mt-4">
+          <TransactionForm
+            initialValues={{ type: type, recurring: false, amount: "" }}
+            onSubmit={(values) => {
+              handleSubmit(values);
+            }}
+          />
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }

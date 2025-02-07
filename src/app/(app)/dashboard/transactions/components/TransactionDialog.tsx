@@ -11,6 +11,7 @@ import {
   StickyNote,
   Trash,
   Edit,
+  Repeat,
 } from "lucide-react";
 import {
   Dialog,
@@ -161,13 +162,31 @@ export const TransactionDialog = forwardRef(
                   </div>
                 </div>
               )}
+              {transaction.isAddedByRecurring && (
+                <div className="grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
+                  <Repeat className="h-4 w-4 text-muted-foreground" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none">
+                      Recurring
+                    </p>
+                    <p className="text-sm text-muted-foreground">Yes</p>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <TransactionForm
-              transaction={transaction}
+              initialValues={{
+                type: transaction.type,
+                amount: transaction.amount.toString(),
+                categoryId: transaction.categoryId,
+                date: transaction.date,
+                description: transaction.description ?? "",
+                recurring: transaction.isAddedByRecurring,
+                recurringType: transaction.recurringType ?? undefined,
+              }}
               onSubmit={handleUpdate}
               editing
-              type={transaction.type}
             />
           )}
           <DialogFooter>
