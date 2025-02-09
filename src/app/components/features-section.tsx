@@ -21,6 +21,53 @@ interface FeatureProps {
   description: string;
 }
 
+const currentFeatures: FeatureProps[] = [
+  {
+    image: "/landing/images/expenses.png",
+    title: "Expense/Income Addition",
+    description: "Easily add and categorize your expenses and income.",
+  },
+  {
+    image: "/landing/images/reports.png",
+    title: "Customized Reports",
+    description: "Generate detailed reports for your transactions.",
+  },
+  {
+    image: "/landing/images/charts.png",
+    title: "Graphs and Charts",
+    description:
+      "Visualize your spending with graph comparisons and pie charts.",
+  },
+  {
+    image: "/landing/images/data.png",
+    title: "Data Export",
+    description: "Export your transaction data for external use.",
+  },
+  {
+    image: "/landing/images/recurring.png",
+    title: "Recurring Transactions",
+    description: "Manage recurring transactions with ease.",
+  },
+];
+
+const upcomingFeatures: FeatureProps[] = [
+  {
+    icon: <Wallet size={32} />,
+    title: "Budget Management",
+    description: "Set and track spending limits for specific categories.",
+  },
+  {
+    icon: <Globe size={32} />,
+    title: "Multi-Currency Support",
+    description: "Handle expenses and income in different currencies.",
+  },
+  {
+    icon: <Smartphone size={32} />,
+    title: "Mobile App Integration",
+    description: "Access Finflow on the go with a companion mobile app.",
+  },
+];
+
 const ImageFeature = ({ image, title, description }: FeatureProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -75,53 +122,6 @@ const IconFeature = ({ icon, title, description }: FeatureProps) => (
     <p className="text-gray-400">{description}</p>
   </motion.div>
 );
-
-const currentFeatures: FeatureProps[] = [
-  {
-    image: "/landing/images/expenses.png",
-    title: "Expense/Income Addition",
-    description: "Easily add and categorize your expenses and income.",
-  },
-  {
-    image: "/landing/images/reports.png",
-    title: "Customized Reports",
-    description: "Generate detailed reports for your transactions.",
-  },
-  {
-    image: "/landing/images/charts.png",
-    title: "Graphs and Charts",
-    description:
-      "Visualize your spending with graph comparisons and pie charts.",
-  },
-  {
-    image: "/landing/images/data.png",
-    title: "Data Export",
-    description: "Export your transaction data for external use.",
-  },
-  {
-    image: "/landing/images/recurring.png",
-    title: "Recurring Transactions",
-    description: "Manage recurring transactions with ease.",
-  },
-];
-
-const upcomingFeatures: FeatureProps[] = [
-  {
-    icon: <Wallet size={32} />,
-    title: "Budget Management",
-    description: "Set and track spending limits for specific categories.",
-  },
-  {
-    icon: <Globe size={32} />,
-    title: "Multi-Currency Support",
-    description: "Handle expenses and income in different currencies.",
-  },
-  {
-    icon: <Smartphone size={32} />,
-    title: "Mobile App Integration",
-    description: "Access Finflow on the go with a companion mobile app.",
-  },
-];
 
 export default function FeaturesSection() {
   return (

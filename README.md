@@ -44,7 +44,7 @@ Ensure you have the following installed:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/finflow.git
+   git clone https://github.com/DivyanshuLohani/FinFlow.git
    cd finflow
    ```
 
@@ -64,12 +64,25 @@ Ensure you have the following installed:
    ```
    Fill in the necessary details in the `.env` file, such as your database connection string and other configurations.
 
-5. Start the development server:
+5. Seed the database (Optional)
+   ```bash
+   npx prisma db seed
+   ```
+   
+  > <span style="font-weight:bold; color:#ff6600;">&#9888; WARNING:</span> 
+  This will delete the existing data in the database. Do not run in production.
+
+
+
+
+
+6. Start the development server:
    ```bash
    npm run dev
    ```
 
-6. Open the app in your browser at `http://localhost:3000`.
+
+7. Open the app in your browser at `http://localhost:3000`.
 
 ---
 
