@@ -26,8 +26,7 @@ export async function DELETE(
       JSON.stringify({ message: "Transaction deleted successfully", result }),
       { status: 200 }
     );
-  } catch (error) {
-    console.error("Error deleting transaction:", error);
+  } catch {
     return new Response(
       JSON.stringify({ message: "Failed to delete transaction" }),
       { status: 500 }

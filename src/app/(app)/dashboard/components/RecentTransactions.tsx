@@ -54,7 +54,11 @@ const RecentTransactions = forwardRef(({}, ref) => {
         <div className="space-y-8">
           {recentTransactions.length > 0 ? (
             recentTransactions.map((transaction: TTransaction) => (
-              <ListTransaction transaction={transaction} key={transaction.id} />
+              <ListTransaction
+                transaction={transaction}
+                key={transaction.id}
+                setTransactions={setRecentTransactions}
+              />
             ))
           ) : (
             <div>No recent transactions</div>

@@ -3,18 +3,26 @@ import { formatCurrency, formatDate } from "@/lib/utils";
 import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 import clsx from "clsx";
 import { TTransaction } from "@/types/transaction";
+import { TransactionDialog } from "../transactions/components/TransactionDialog";
+import { useRef } from "react";
 
 interface ListTransactionProps {
-  transaction: TTransaction & {
-    category: {
-      name: string;
-    };
-  };
+  transaction: TTransaction;
+  setTransactions?: React.Dispatch<React.SetStateAction<TTransaction[]>>;
 }
 
-export default function ListTransaction({ transaction }: ListTransactionProps) {
+export default function ListTransaction({
+  transaction,
+  setTransactions,
+}: ListTransactionProps) {
+  const dialogRef = useRef<{ openDialog: () => void; closeDialog: () => void }>(
+    null
+  );
   return (
-    <div key={transaction.id} className="flex items-center">
+    <div
+      className="flex items-center cursor-pointer"
+      onClick={dialogRef.current?.openDialog}
+    >
       <div
         className={`rounded-full p-2 ${
           transaction.type === TransactionType.INCOME
@@ -44,6 +52,12 @@ export default function ListTransaction({ transaction }: ListTransactionProps) {
       >
         {transaction.type === TransactionType.INCOME ? "+" : "-"}
         {formatCurrency(transaction.amount)}
+        <TransactionDialog
+          ref={dialogRef}
+          className="hidden"
+          transaction={transaction}
+          setTransactions={setTransactions}
+        />
       </div>
     </div>
   );

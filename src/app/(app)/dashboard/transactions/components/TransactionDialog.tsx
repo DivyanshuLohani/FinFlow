@@ -30,17 +30,23 @@ import { formatCurrency } from "@/lib/utils";
 import { deleteTransaction, updateTransaction } from "@/lib/transaction";
 import { toast } from "react-toastify";
 import TransactionForm from "@/app/components/TransactionForm";
+import { useRouter } from "next/navigation";
 
 interface TransactionDialogProps {
   transaction: TTransaction;
-  setTransactions: React.Dispatch<React.SetStateAction<TTransaction[]>>;
+  setTransactions?: React.Dispatch<React.SetStateAction<TTransaction[]>>;
+  className?: string;
 }
 
 export const TransactionDialog = forwardRef(
-  ({ transaction, setTransactions }: TransactionDialogProps, ref) => {
+  (
+    { transaction, setTransactions, className }: TransactionDialogProps,
+    ref
+  ) => {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [editing, setEditing] = useState(false);
+    const router = useRouter();
 
     useImperativeHandle(ref, () => ({
       openDialog: () => {
@@ -59,7 +65,15 @@ export const TransactionDialog = forwardRef(
       setLoading(true);
       try {
         await deleteTransaction(transaction.id);
-        setTransactions((prev) => prev.filter((t) => t.id !== transaction.id));
+        if (setTransactions) {
+          setTransactions((prev) =>
+            prev.filter((t) => t.id !== transaction.id)
+          );
+        } else {
+          setIsOpen(false);
+          router.refresh();
+          toast.success("Transaction deleted successfully");
+        }
       } catch {
         toast.error("Something went wrong");
       }
@@ -69,9 +83,11 @@ export const TransactionDialog = forwardRef(
     const handleUpdate = async (values: any) => {
       try {
         const updated = await updateTransaction(transaction.id, values);
-        setTransactions((prev) =>
-          prev.map((t) => (t.id === transaction.id ? { ...updated } : t))
-        );
+        if (setTransactions) {
+          setTransactions((prev) =>
+            prev.map((t) => (t.id === transaction.id ? { ...updated } : t))
+          );
+        }
         toast.success("Transaction updated successfully");
         setEditing(false);
       } catch {
@@ -84,7 +100,7 @@ export const TransactionDialog = forwardRef(
     return (
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button>More details</Button>
+          <Button className={className}>More details</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px] overflow-y-scroll max-h-screen">
           <DialogHeader>
