@@ -21,9 +21,7 @@ export async function GET() {
     );
 
     returnCategories.push({
-      id: category.id,
-      name: category.name,
-      special: category.special,
+      ...category,
       totalIncome,
       totalExpenses,
     });
