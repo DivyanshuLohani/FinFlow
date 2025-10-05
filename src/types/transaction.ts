@@ -4,6 +4,7 @@ import { z } from "zod";
 export const ZCategory = z.object({
   id: z.string().cuid(),
   name: z.string(),
+  color: z.string(),
   userId: z.string().cuid(),
   special: z.boolean().default(false),
 });
@@ -63,6 +64,14 @@ export type TCategory = Category & {
 
 export const categoryCreateSchema = z.object({
   name: z.string().min(1, "Category name is required"),
+  color: z.string().regex(/^#[0-9a-fA-F]{6}$/, "Invalid color format"),
 });
 
 export type TCategoryCreateInput = z.infer<typeof categoryCreateSchema>;
+
+export const categoryUpdateSchema = z.object({
+  name: z.string().min(1, "Category name is required").optional(),
+  color: z.string().regex(/^#[0-9a-fA-F]{6}$/, "Invalid color format").optional(),
+});
+
+export type TCategoryUpdateInput = z.infer<typeof categoryUpdateSchema>;

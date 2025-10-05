@@ -7,6 +7,7 @@ interface CategoryContextValue {
   categories: Category[];
   addCategory: (category: Category) => void;
   removeCategory: (categoryId: string) => void;
+  updateCategory: (category: Category) => void;
 }
 
 // Create the context with a default value
@@ -24,15 +25,24 @@ export const CategoryProvider: React.FC<{
   const addCategory = (category: Category) => {
     setCategories((prevCategories) => [...prevCategories, category]);
   };
+
   const removeCategory = (categoryId: string) => {
     setCategories((prevCategories) =>
       prevCategories.filter((category) => category.id !== categoryId)
     );
   };
 
+  const updateCategory = (updatedCategory: Category) => {
+    setCategories((prevCategories) =>
+      prevCategories.map((category) =>
+        category.id === updatedCategory.id ? updatedCategory : category
+      )
+    );
+  };
+
   return (
     <CategoryContext.Provider
-      value={{ categories, addCategory, removeCategory }}
+      value={{ categories, addCategory, removeCategory, updateCategory }}
     >
       {children}
     </CategoryContext.Provider>

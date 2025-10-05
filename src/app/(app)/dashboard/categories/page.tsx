@@ -25,7 +25,7 @@ function CategoryCardSkeleton() {
 
 export default function CategoriesPage() {
   const [isFetching, setIsFetching] = useState(true);
-  const { addCategory, removeCategory } = useCategories();
+  const { addCategory, removeCategory, updateCategory } = useCategories();
   const [categories, setCategories] = useState<TCategory[]>([]);
   const [search, setSearch] = useState<string>("");
 
@@ -56,6 +56,15 @@ export default function CategoriesPage() {
     };
     loadCategories();
   }, []);
+
+  const handleUpdateCategory = (updatedCategory: TCategory) => {
+    setCategories((prev) =>
+      prev.map((cat) =>
+        cat.id === updatedCategory.id ? updatedCategory : cat
+      )
+    );
+    updateCategory(updatedCategory);
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -93,6 +102,7 @@ export default function CategoriesPage() {
                 removeCategory(c.id);
               }
             }}
+            onUpdate={handleUpdateCategory as any}
           />
         ))}
       </div>

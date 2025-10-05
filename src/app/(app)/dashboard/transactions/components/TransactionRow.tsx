@@ -1,7 +1,8 @@
 "use client";
 import { TableRow, TableCell } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, getTextColorFromBg } from "@/lib/utils";
 import { TTransaction } from "@/types/transaction";
 
 import { ArrowUp, ArrowDown } from "lucide-react";
@@ -26,7 +27,17 @@ export default function TransactionRow({
       key={transaction.id}
       onClick={() => dialogRef.current?.openDialog()}
     >
-      <TableCell>{transaction.category.name}</TableCell>
+      <TableCell>
+        <Badge variant="secondary" className="whitespace-nowrap" style={
+          {
+            backgroundColor: transaction.category.color,
+            color: getTextColorFromBg(transaction.category.color)
+          }
+        }>
+
+          {transaction.category.name}
+        </Badge>
+      </TableCell>
       <TableCell className="text-right">
         {transaction.type === "INCOME" ? (
           <span className="flex items-center text-green-600">

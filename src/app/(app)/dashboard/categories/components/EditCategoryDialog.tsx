@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -10,29 +10,40 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "react-toastify";
 
-import { createCategory } from "../actions";
-import { categoryCreateSchema, TCategory } from "@/types/transaction";
+import { updateCategory } from "../actions";
+import { categoryUpdateSchema, TCategory } from "@/types/transaction";
 
-type AddCategoryModalProps = {
-  onAddCategory: (category: TCategory) => any;
+type EditCategoryModalProps = {
+  category: TCategory;
+  onUpdateCategory: (category: TCategory) => any;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
 };
 
-export function AddCategoryModal({ onAddCategory }: AddCategoryModalProps) {
-  const [newCategoryName, setNewCategoryName] = useState("");
-  const [color, setColor] = useState("#cccccc");
-  const [isOpen, setIsOpen] = useState(false);
+export function EditCategoryModal({
+  category,
+  onUpdateCategory,
+  isOpen,
+  setIsOpen,
+}: EditCategoryModalProps) {
+  const [name, setName] = useState(category.name);
+  const [color, setColor] = useState(category.color || "#cccccc");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setName(category.name);
+    setColor(category.color);
+  }, [category]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      categoryCreateSchema.parse({ name: newCategoryName, color });
+      categoryUpdateSchema.parse({ name, color });
     } catch {
       toast.error("Invalid category name or color");
       setIsLoading(false);
@@ -40,12 +51,10 @@ export function AddCategoryModal({ onAddCategory }: AddCategoryModalProps) {
     }
 
     try {
-      const category = await createCategory({ name: newCategoryName, color });
-      await onAddCategory(category);
-      setNewCategoryName("");
-      setColor("#cccccc");
+      const updatedCategory = await updateCategory(category.id, { name, color });
+      await onUpdateCategory(updatedCategory);
       setIsOpen(false);
-      toast.success("Category added successfully!");
+      toast.success("Category updated successfully!");
     } catch {
       toast.error("Something went wrong");
     } finally {
@@ -55,14 +64,11 @@ export function AddCategoryModal({ onAddCategory }: AddCategoryModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button>Add Category</Button>
-      </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add New Category</DialogTitle>
+          <DialogTitle>Edit Category</DialogTitle>
           <DialogDescription>
-            Enter the name and color for the new category you want to add.
+            Enter the new name and color for your category.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
@@ -73,8 +79,8 @@ export function AddCategoryModal({ onAddCategory }: AddCategoryModalProps) {
               </Label>
               <Input
                 id="name"
-                value={newCategoryName}
-                onChange={(e) => setNewCategoryName(e.target.value)}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 className="col-span-3"
               />
             </div>
@@ -93,7 +99,7 @@ export function AddCategoryModal({ onAddCategory }: AddCategoryModalProps) {
           </div>
           <DialogFooter>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Adding..." : "Add Category"}
+              {isLoading ? "Updating..." : "Update Category"}
             </Button>
           </DialogFooter>
         </form>

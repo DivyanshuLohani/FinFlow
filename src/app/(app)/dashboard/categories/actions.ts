@@ -1,14 +1,36 @@
-export async function createCategory(name: string) {
+import { TCategoryUpdateInput } from "@/types/transaction";
+
+export async function createCategory(data: { name: string; color: string }) {
+  const { name, color } = data;
   const res = await fetch("/api/v1/categories", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name }),
+    body: JSON.stringify({ name, color }),
   });
 
   if (!res.ok) {
     throw new Error("Failed to create category");
+  }
+
+  const category = await res.json();
+  return category;
+}
+
+export async function updateCategory(id: string, data: TCategoryUpdateInput) {
+  const res = await fetch(`/api/v1/categories/${id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to update category");
   }
 
   const category = await res.json();
