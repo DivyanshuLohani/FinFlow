@@ -7,7 +7,7 @@ export async function DELETE(req: Request, { params }: { params: any }) {
 
   try {
     await deleteCategory(id);
-    return Response.json({}, { status: 204 });
+    return Response.json({}, { status: 200 });
   } catch (e: any) {
     if (e.message) {
       return new Response(JSON.stringify({ message: e.message }), {
