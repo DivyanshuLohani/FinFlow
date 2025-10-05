@@ -116,3 +116,75 @@ export async function getRecentTransactions(limit: number = 5) {
 
   return transactions;
 }
+
+export async function getSpendingByCategory(timeFrame: {
+  startDate: Date;
+  endDate: Date;
+}) {
+  const userId = await getUserIdFromSession();
+  const { startDate, endDate } = ZTimeFrame.parse(timeFrame);
+
+  const spending = await prisma.transaction.groupBy({
+    by: ["categoryId"],
+    where: {
+      userId,
+      type: "EXPENSE",
+      date: { gte: startDate, lte: endDate },
+    },
+    _sum: {
+      amount: true,
+    },
+  });
+
+  const categories = await prisma.category.findMany({
+    where: {
+      id: { in: spending.map((s) => s.categoryId) },
+    },
+  });
+
+  return spending.map((s) => ({
+    ...s,
+    category: categories.find((c) => c.id === s.categoryId),
+  }));
+}
+
+export async function getIncomeExpenseTrend(timeFrame: {
+  startDate: Date;
+  endDate: Date;
+}) {
+  const userId = await getUserIdFromSession();
+  const { startDate, endDate } = ZTimeFrame.parse(timeFrame);
+
+  const transactions = await prisma.transaction.findMany({
+    where: {
+      userId,
+      date: { gte: startDate, lte: endDate },
+    },
+    select: {
+      date: true,
+      type: true,
+      amount: true,
+    },
+    orderBy: {
+      date: "asc",
+    },
+  });
+
+  const trend = transactions.reduce(
+    (acc, transaction) => {
+      const month = transaction.date.toISOString().slice(0, 7); // YYYY-MM
+      if (!acc[month]) {
+        acc[month] = { month, income: 0, expenses: 0 };
+      }
+      if (transaction.type === "INCOME") {
+        acc[month].income += transaction.amount;
+      } else {
+        acc[month].expenses += transaction.amount;
+      }
+      return acc;
+    },
+    {} as Record<string, { month: string; income: number; expenses: number }>
+  );
+
+  return Object.values(trend);
+}
