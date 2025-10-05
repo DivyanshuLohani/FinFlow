@@ -21,10 +21,7 @@ export async function DELETE(req: Request, { params }: { params: any }) {
   }
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: Request, { params }: { params: any }) {
   const id = params.id;
   const data = await req.json();
   const updatedCategory = await updateCategory(id, data);
