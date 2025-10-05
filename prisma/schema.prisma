@@ -79,6 +79,7 @@ model Transaction {
 model Category {
   id     String       @id @default(cuid())
   name   String
+  color  String       @default("#cccccc")
   // type   CategoryType
   userId String
   special Boolean @default(false)

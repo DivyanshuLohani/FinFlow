@@ -3,10 +3,12 @@ import { prisma } from "../database/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/authOptions";
 import {
+  TCategoryUpdateInput,
   TTransaction,
   TTransactionUpdate,
   ZTransactionCreate,
   ZTransactionUpdate,
+  categoryUpdateSchema,
 } from "@/types/transaction";
 import { validateInputs } from "../utils/validate";
 import { ZId } from "@/types/common";
@@ -120,18 +122,41 @@ export async function getCategories() {
   }
 }
 
-export async function createCategory(name: string) {
+export async function createCategory(data: { name: string; color: string }) {
   const session = await getServerSession(authOptions);
   if (!session) throw new Error("Unauthorized");
 
   try {
     const category = await prisma.category.create({
       data: {
-        name: name,
+        name: data.name,
+        color: data.color,
         userId: session.user.id,
       },
     });
     return category;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function updateCategory(
+  id: string,
+  data: TCategoryUpdateInput
+) {
+  validateInputs([id, ZId], [data, categoryUpdateSchema]);
+  const session = await getServerSession(authOptions);
+  if (!session) throw new Error("Unauthorized");
+
+  try {
+    const updatedCategory = await prisma.category.update({
+      where: {
+        id,
+        userId: session.user.id,
+      },
+      data,
+    });
+    return updatedCategory;
   } catch (error) {
     throw error;
   }

@@ -32,7 +32,12 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const { name } = await req.json();
-  const category = await createCategory(name);
-  return NextResponse.json(category);
+  const { name, color } = await req.json();
+  const category = await createCategory({ name, color });
+  // The category has just been created
+  return NextResponse.json({
+    ...category,
+    totalIncome: 0,
+    totalExpenses: 0,
+  });
 }
