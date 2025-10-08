@@ -45,7 +45,7 @@ export default function DashboardPage() {
             <IncomeExpenseChart />
           </CardContent>
         </Card>}
-        <Card className="lg:col-span-5">
+        {!isMobile && <Card className="lg:col-span-5">
           <CardHeader>
             <CardTitle>Spending by Category</CardTitle>
             <CardDescription>Current month</CardDescription>
@@ -53,7 +53,7 @@ export default function DashboardPage() {
           <CardContent>
             <SpendingByCategoryChart />
           </CardContent>
-        </Card>
+        </Card>}
       </div>
       <div className="grid grid-cols-1 gap-6">
         <Card>
