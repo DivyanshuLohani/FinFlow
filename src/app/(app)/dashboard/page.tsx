@@ -18,6 +18,7 @@ import { TTransaction } from "@/types/transaction";
 import SpendingByCategoryChart from "./components/SpendingByCategoryChart";
 import IncomeExpenseChart from "./components/IncomeExpenseChart";
 import SpendingList from "./components/SpendingList";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function DashboardPage() {
   const transactionMatricsRef = useRef<TransactionMatricsElement>(null);
@@ -29,12 +30,13 @@ export default function DashboardPage() {
     transactionMatricsRef.current?.addTransaction(transaction);
     recentTransactionsRef.current?.addTransaction(transaction);
   };
+  const isMobile = useIsMobile();
 
   return (
     <div className="space-y-6">
       <TransactionMetrics ref={transactionMatricsRef} />
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-12">
-        <Card className="lg:col-span-7">
+        {!isMobile && <Card className="lg:col-span-7">
           <CardHeader>
             <CardTitle>Income vs. Expenses</CardTitle>
             <CardDescription>Last 6 months</CardDescription>
@@ -42,7 +44,7 @@ export default function DashboardPage() {
           <CardContent>
             <IncomeExpenseChart />
           </CardContent>
-        </Card>
+        </Card>}
         <Card className="lg:col-span-5">
           <CardHeader>
             <CardTitle>Spending by Category</CardTitle>
