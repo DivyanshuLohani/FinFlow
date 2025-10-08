@@ -11,10 +11,10 @@
 - **Customized Reports**: Generate detailed reports for your transactions.
 - **Graphs and Charts**: Visualize your spending with graph comparisons and pie charts.
 - **Data Export**: Export your transaction data for external use.
+- **Recurring Transactions**: Automate frequent expenses or income.
 
 ### Upcoming Features
 
-- **Recurring Transactions**: Automate frequent expenses or income.
 - **Budget Management**: Set and track spending limits for specific categories.
 - **Multi-Currency Support**: Handle expenses and income in different currencies.
 - **Mobile App Integration**: Access Finflow on the go with a companion mobile app.
