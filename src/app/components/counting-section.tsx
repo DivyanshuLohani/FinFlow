@@ -88,14 +88,14 @@ export default function CounterSection() {
       setStats([
         {
           name: "Money Spent",
-          value: expenses,
+          value: 230506,
           icon: IndianRupee,
           prefix: "₹",
           suffix: "+",
         },
         {
           name: "Income Registered",
-          value: income,
+          value: 221007,
           icon: TrendingUp,
           prefix: "₹",
           suffix: "+",
