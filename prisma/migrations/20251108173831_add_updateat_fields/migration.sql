@@ -1,0 +1,9 @@
+-- AlterTable
+ALTER TABLE "Category" ADD COLUMN     "deletedAt" TIMESTAMP(3),
+ADD COLUMN     "origin" TEXT,
+ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "Transaction" ADD COLUMN     "deletedAt" TIMESTAMP(3),
+ADD COLUMN     "origin" TEXT,
+ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

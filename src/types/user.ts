@@ -12,7 +12,7 @@ export const ZUser = z.object({
   updatedAt: z.date(),
 });
 
-export type TUser = z.infer<typeof ZUser>;
+export type TUser = z.infer<typeof ZUser> & { isAdmin: boolean };
 
 // User Create Input Schema
 export const ZUserCreateInput = z.object({
