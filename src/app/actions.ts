@@ -7,6 +7,9 @@ const getHomePageData = unstable_cache(
   async () => {
     const [transactions, users] = await prisma.$transaction([
       prisma.transaction.groupBy({
+        where: {
+          deletedAt: null,
+        },
         by: ["type"],
         _sum: {
           amount: true,

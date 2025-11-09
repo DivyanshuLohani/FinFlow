@@ -28,6 +28,7 @@ export async function getTotalBalance() {
       where: {
         type: "INCOME",
         userId,
+        deletedAt: null,
       },
       _sum: { amount: true },
     }),
@@ -35,6 +36,7 @@ export async function getTotalBalance() {
       where: {
         type: "EXPENSE",
         userId,
+        deletedAt: null,
       },
       _sum: { amount: true },
     }),
@@ -57,6 +59,7 @@ export async function getTotalIncome(timeFrame: {
     where: {
       type: "INCOME",
       date: { gte: startDate, lte: endDate },
+      deletedAt: null,
       userId,
     },
     _sum: { amount: true },
@@ -76,6 +79,7 @@ export async function getTotalExpenses(timeFrame: {
     where: {
       type: "EXPENSE",
       date: { gte: startDate, lte: endDate },
+      deletedAt: null,
       userId,
     },
     _sum: { amount: true },
@@ -108,7 +112,7 @@ export async function getRecentTransactions(limit: number = 5) {
   const userId = await getUserIdFromSession();
 
   const transactions = await prisma.transaction.findMany({
-    where: { userId },
+    where: { userId, deletedAt: null },
     orderBy: { date: "desc" },
     take: limit,
     include: { category: true },
@@ -129,6 +133,7 @@ export async function getSpendingByCategory(timeFrame: {
     where: {
       userId,
       type: "EXPENSE",
+      deletedAt: null,
       date: { gte: startDate, lte: endDate },
     },
     _sum: {
@@ -139,6 +144,7 @@ export async function getSpendingByCategory(timeFrame: {
   const categories = await prisma.category.findMany({
     where: {
       id: { in: spending.map((s) => s.categoryId) },
+      deletedAt: null,
     },
   });
 
@@ -159,6 +165,7 @@ export async function getIncomeExpenseTrend(timeFrame: {
     where: {
       userId,
       date: { gte: startDate, lte: endDate },
+      deletedAt: null,
     },
     select: {
       date: true,

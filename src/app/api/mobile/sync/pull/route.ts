@@ -9,10 +9,10 @@ export async function POST(req: Request) {
 
     const [transactions, categories] = await Promise.all([
       prisma.transaction.findMany({
-        where: { userId, updatedAt: { gt: sinceDate } },
+        where: { userId, updatedAt: { gt: sinceDate }, deletedAt: null },
       }),
       prisma.category.findMany({
-        where: { userId, updatedAt: { gt: sinceDate } },
+        where: { userId, updatedAt: { gt: sinceDate }, deletedAt: null },
       }),
     ]);
 
@@ -33,8 +33,4 @@ export async function POST(req: Request) {
       { status: 401 }
     );
   }
-}
-
-export function GET() {
-  return new Response("Method Not Allowed", { status: 405 });
 }

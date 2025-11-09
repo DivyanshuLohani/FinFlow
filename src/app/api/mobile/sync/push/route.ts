@@ -8,6 +8,25 @@ export async function POST(req: Request) {
 
     const conflicts: any[] = [];
     const applied: any = { transactions: [], categories: [] };
+    function normalizeIncomingT(data: any) {
+      const { isDeleted, ...rest } = data;
+
+      return {
+        ...rest,
+        date: data.date ? new Date(data.date) : undefined,
+        updatedAt: data.updatedAt ? new Date(data.updatedAt) : new Date(),
+        deletedAt: isDeleted ? new Date() : null,
+      };
+    }
+    function normalizeIncomingC(data: any) {
+      const { isDeleted, ...rest } = data;
+
+      return {
+        ...rest,
+        updatedAt: data.updatedAt ? new Date(data.updatedAt) : new Date(),
+        deletedAt: isDeleted ? new Date() : null,
+      };
+    }
 
     // Helper for upsert with conflict detection
     async function upsertTransaction(data: any) {
@@ -23,10 +42,12 @@ export async function POST(req: Request) {
         });
         return false;
       }
+      const normalizedData = normalizeIncomingT(data);
+
       await prisma.transaction.upsert({
         where: { id: data.id },
-        update: { ...data, userId },
-        create: { id: data.id, ...data, userId },
+        update: { ...normalizedData, userId },
+        create: { id: data.id, ...normalizedData, userId },
       });
       return true;
     }
@@ -44,10 +65,11 @@ export async function POST(req: Request) {
         });
         return false;
       }
+      const normalizedData = normalizeIncomingC(data);
       await prisma.category.upsert({
         where: { id: data.id },
-        update: { ...data, userId },
-        create: { id: data.id, ...data, userId },
+        update: { ...normalizeIncomingC, userId },
+        create: { id: data.id, ...normalizedData, userId },
       });
       return true;
     }
