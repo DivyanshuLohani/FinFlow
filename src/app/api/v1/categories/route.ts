@@ -7,7 +7,7 @@ export async function GET() {
   const returnCategories = [];
   for (const category of categories) {
     const transactions = await prisma.transaction.findMany({
-      where: { categoryId: category.id },
+      where: { categoryId: category.id, deletedAt: null },
     });
 
     const totalIncome = transactions.reduce(

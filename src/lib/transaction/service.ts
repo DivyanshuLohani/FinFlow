@@ -94,10 +94,13 @@ export async function deleteTransaction(id: string) {
   const session = await getServerSession(authOptions);
   if (!session) throw new Error("Unauthorized");
   try {
-    const deletedTransaction = await prisma.transaction.delete({
+    const deletedTransaction = await prisma.transaction.update({
       where: {
         id,
         userId: session.user.id,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
     return deletedTransaction;
@@ -114,6 +117,7 @@ export async function getCategories() {
     const categories = await prisma.category.findMany({
       where: {
         userId: session.user.id,
+        deletedAt: null,
       },
     });
     return categories;
@@ -140,10 +144,7 @@ export async function createCategory(data: { name: string; color: string }) {
   }
 }
 
-export async function updateCategory(
-  id: string,
-  data: TCategoryUpdateInput
-) {
+export async function updateCategory(id: string, data: TCategoryUpdateInput) {
   validateInputs([id, ZId], [data, categoryUpdateSchema]);
   const session = await getServerSession(authOptions);
   if (!session) throw new Error("Unauthorized");
@@ -172,6 +173,7 @@ export async function deleteCategory(id: string) {
       userId: session.user.id,
       special: true,
       name: "Others",
+      deletedAt: null,
     },
   });
   if (id === othersCategory?.id) {
@@ -191,6 +193,7 @@ export async function deleteCategory(id: string) {
     where: {
       id,
       userId: session.user.id,
+      deletedAt: null,
     },
   });
   if (!category) {
@@ -210,10 +213,13 @@ export async function deleteCategory(id: string) {
         categoryId: othersCategory.id,
       },
     });
-    await prisma.category.delete({
+    await prisma.category.update({
       where: {
         id,
         userId: session.user.id,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
   } catch (error) {
@@ -242,6 +248,7 @@ export async function getTransactions(
       prisma.transaction.findMany({
         where: {
           userId,
+          deletedAt: null,
           ...(startDate && endDate
             ? {
                 date: {
@@ -303,6 +310,7 @@ export async function updateRecurringTransactions() {
   const recurringTransactions = await prisma.transaction.findMany({
     where: {
       recurring: true,
+      deletedAt: null,
       nextDate: {
         lte: new Date(),
       },

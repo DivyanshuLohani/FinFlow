@@ -27,7 +27,7 @@ export async function PUT(req: Request, { params }: { params: any }) {
   const updatedCategory = await updateCategory(id, data);
   // The category has just been updated
   const transactions = await prisma.transaction.findMany({
-    where: { categoryId: updatedCategory.id },
+    where: { categoryId: updatedCategory.id, deletedAt: null },
   });
 
   const totalIncome = transactions.reduce(

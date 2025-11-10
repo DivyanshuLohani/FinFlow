@@ -71,6 +71,11 @@ model Transaction {
   userId      String
   categoryId  String
 
+  // NEW sync metadata
+  updatedAt DateTime @updatedAt @default(now())
+  deletedAt   DateTime?
+  origin      String?     // "mobile" | "web" (optional)
+
   user     User     @relation(fields: [userId], references: [id])
   category Category @relation(fields: [categoryId], references: [id])
 }
@@ -84,6 +89,12 @@ model Category {
   userId String
   special Boolean @default(false)
   user         User          @relation(fields: [userId], references: [id])
+
+  // NEW sync metadata
+  updatedAt DateTime @updatedAt @default(now())
+  deletedAt DateTime?
+  origin    String?
+
   transactions Transaction[]
   budgets       Budget[]
 }

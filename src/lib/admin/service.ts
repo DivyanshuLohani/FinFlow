@@ -11,13 +11,14 @@ export async function getAdminData() {
 
   const [totalTransactions, totalExpense, totalIncome, totalUsers] =
     await prisma.$transaction([
-      prisma.transaction.count(),
+      prisma.transaction.count({ where: { deletedAt: null } }),
       prisma.transaction.aggregate({
         _sum: {
           amount: true,
         },
         where: {
           type: "EXPENSE",
+          deletedAt: null,
         },
       }),
       prisma.transaction.aggregate({
@@ -26,6 +27,7 @@ export async function getAdminData() {
         },
         where: {
           type: "INCOME",
+          deletedAt: null,
         },
       }),
       prisma.user.count(),

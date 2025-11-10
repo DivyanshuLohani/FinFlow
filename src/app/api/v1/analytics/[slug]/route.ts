@@ -8,8 +8,8 @@ export async function GET(req: Request, { params }: { params: any }) {
   const { searchParams } = new URL(req.url);
   const startDate = new Date(searchParams.get("startDate") || "");
   const endDate = new Date(searchParams.get("endDate") || "");
-
-  switch (params.slug) {
+  const { slug } = await params;
+  switch (slug) {
     case "spending-by-category":
       const spending = await getSpendingByCategory({ startDate, endDate });
       return NextResponse.json(spending);
