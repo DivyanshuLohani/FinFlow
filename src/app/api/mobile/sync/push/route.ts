@@ -23,6 +23,7 @@ export async function POST(req: Request) {
 
       return {
         ...rest,
+        color: data.color.toLowerCase() || null,
         updatedAt: data.updatedAt ? new Date(data.updatedAt) : new Date(),
         deletedAt: isDeleted ? new Date() : null,
       };
@@ -68,7 +69,7 @@ export async function POST(req: Request) {
       const normalizedData = normalizeIncomingC(data);
       await prisma.category.upsert({
         where: { id: data.id },
-        update: { ...normalizeIncomingC, userId },
+        update: { ...normalizedData, userId },
         create: { id: data.id, ...normalizedData, userId },
       });
       return true;
